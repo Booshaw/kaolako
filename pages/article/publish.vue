@@ -1,0 +1,327 @@
+<template>
+  <div class="p-wrapper">
+    <kaola-nav></kaola-nav>
+    <div class="main">
+      <div class="bg">
+        <h2>发布手记</h2>
+      </div>
+      <div class="container" v-if="tagList && tagList.length">
+        <div class="title">
+          <span>标题</span>
+          <i-input v-model="title" placeholder="请输入标题"></i-input>
+        </div>
+        <div class="title">
+          <span>正文</span>
+          <div class="quill-editor"
+            :content="content"
+            @change="onEditorChange($event)"
+            @blur="onEditorBlur($event)"
+            @focus="onEditorFocus($event)"
+            @ready="onEditorReady($event)"
+            v-quill:myQuillEditor="editorOption">
+          </div>
+        </div>
+        <div class="title">
+          <span>标签</span> <span>{{tagCurrent.length}}/3</span>
+          <ul>
+            <li v-for="(item, index) in tagList" :key="index" @click="selectTagGrou(item)" :class="{selectTagClass: (tagCurrent.indexOf(item.id))!== -1}">{{item.name}}</li>
+          </ul>
+        </div>
+        <div class="title">
+          <span>分类</span>
+          <ul>
+            <li v-for="(item, index) in categoryList" :key="index" @click="selectCategory(item)" :class="{selectTagClass: item.id === categoryCurrent}">{{item.name}}</li>
+          </ul>
+        </div>
+        <div class="title">
+          <span>文章封面</span>
+          <Upload
+            :show-upload-list="false"
+            :default-file-list="defaultList"
+            :on-success="handleSuccess"
+            :max-size="20480"
+            :on-error="handleError"
+            :on-format-error="handleFormatError"
+            :on-exceeded-size="handleMaxSize"
+            :before-upload="handleBeforeUpload"
+            action="http://kaola.eaon.win:8080/kaola/common/file/upload">
+            <div style="padding: 20px 0">
+                <Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
+                <p>尺寸为200*200像素，格式为 PNG/JPG/GIF,小于等于80KB</p>
+            </div>
+          </Upload>
+        </div>
+        <div>
+          <Button type="error" :loading="loading" @click="updateArticle">
+            <span v-if="!loading">发布手记</span>
+            <span v-else>Loading...</span>
+          </Button>
+        </div>
+      </div>
+    </div>
+    <kaola-footer></kaola-footer>
+  </div>
+</template>
+<script>
+import KaolaNav from '~/components/KaolaNav.vue'
+import KaolaFooter from '~/components/KaolaFooter.vue'
+// import hljs from 'highlight.js'
+// import VueQuillEditor, { Quill } from 'vue-quill-editor'
+// import { ImageDrop } from 'quill-image-drop-module'
+// import ImageResize from 'quill-image-resize-module'
+// Quill.register('modules/imageDrop', ImageDrop)
+// Quill.register('modules/imageResize', ImageResize)
+import Service from '~/plugins/axios'
+import { mapGetters } from 'vuex'
+export default {
+  data () {
+    return {
+      title: '', // 文章标题
+      tagList: [], // 标签列表
+      categoryList: [], // 分类列表
+      tagCurrent: [], // 选中标签列表
+      loading: false, // 发布手记加载中
+      thumbnail: '', // 缩略图id
+      categoryCurrent: 0,
+      defaultList: [],
+      content: '<p>I am Example</p>',
+      editorOption: {
+        // some quill options
+        modules: {
+          toolbar: [
+            ['bold', 'italic', 'underline', 'strike'],
+            ['blockquote', 'code-block'],
+            [{ 'header': 1 }, { 'header': 2 }],
+            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+            [{ 'script': 'sub' }, { 'script': 'super' }],
+            [{ 'indent': '-1' }, { 'indent': '+1' }],
+            [{ 'direction': 'rtl' }],
+            [{ 'size': ['small', false, 'large', 'huge'] }],
+            [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+            [{ 'font': [] }],
+            [{ 'color': [] }, { 'background': [] }],
+            [{ 'align': [] }],
+            ['clean'],
+            ['link', 'image', 'video']
+          ]
+            // history: {
+            //   delay: 1000,
+            //   maxStack: 50,
+            //   userOnly: false
+            // },
+            // imageDrop: true,
+            // imageResize: {
+            //   displayStyles: {
+            //     backgroundColor: 'black',
+            //     border: 'none',
+            //     color: 'white'
+            //   },
+            //   modules: [ 'Resize', 'DisplaySize', 'Toolbar' ]
+            // }
+        }
+      }
+    }
+  },
+  created() {
+    this._getTagList() // 获取文章标签列表
+    console.log(this.cookie)
+  },
+  computed: {
+    // selectTag(item) {
+    //   let isSelect = false
+    //   this.tagCurrent.forEach((value) => {
+    //     if (value === item.id) {
+    //       isSelect = true
+    //     }
+    //   })
+    //   return {
+    //     selectTagClass: true
+    //   }
+    // }
+    ...mapGetters({
+      cookie: 'login/cookie'
+    })
+  },
+  methods: {
+    _getTagList() {
+      return Service.get(`https://easy-mock.com/mock/5ac20177470d657aa5c1dd51/kaolako/homePage`)
+      .then((res) => {
+        if (res.data.code === 200) {
+          console.log(res)
+          this.tagList = res.data.data.tagList,
+          this.categoryList = res.data.data.categoryList
+        }
+      })
+    },
+    selectTagGrou(item) {
+        // if(this.tagCurrent.indexOf(item.id) === -1) {
+        //   console.log(i)
+        // }
+      
+      let index = this.tagCurrent.indexOf(item.id)
+      if(index === -1) {
+        this.tagCurrent.push(item.id)
+      } else {
+        this.tagCurrent.splice(index, 1)
+      }
+      this.tagCurrent = Object.assign(this.tagCurrent.slice(0, 3))
+      console.log(this.tagCurrent)
+    },
+    updateArticle() {
+      this.loading = true
+      return Service.post('http://kaola.eaon.win:8080/kaola/user/article/add',
+        {
+          title: this.title,
+          thumbnail: this.thumbnail,
+          category: this.categoryCurrent,
+          tag: this.tagCurrent,
+          content: this.content
+        })
+      .then(res => {
+        if(res.status === '200') {
+          this.loading = false
+          this.$Notice.info('操作成功')
+        }
+      })
+    },
+    // selectTagGroup(item) {
+    //   if(this.tagCurrent.length === 0){
+    //     this.tagCurrent.push(item.id)
+    //   } else if (this.tagCurrent.length > 0 && this.tagCurrent.length <= 3) {
+    //     let tLength = this.tagCurrent.length
+    //     for(let i = 0;i < tLength; i++) {
+    //       if(this.tagCurrent[i] === item.id) {
+    //         this.tagCurrent.splice(i, 1)
+    //       } else {
+    //         this.tagCurrent.push(item.id)
+    //       }
+    //     }
+    //   } else {
+    //     return
+    //   }
+    //   console.log(this.tagCurrent)
+    // },
+    selectCategory(item) {
+      this.categoryCurrent = item.id
+      // console.log(item)
+    },
+    onEditorBlur(editor) {
+        // console.log('editor blur!', editor)
+      },
+      onEditorFocus(editor) {
+        // console.log('editor focus!', editor)
+      },
+      onEditorReady(editor) {
+        // console.log('editor ready!', editor)
+      },
+      onEditorChange({ editor, html, text }) {
+        // console.log('editor change!', editor, html, text)
+        this.content = html
+      },
+
+      
+    // 文件上传
+    handleBeforeUpload() { // 上传前钩子
+    },
+    handleFormatError() { // 格式化检查钩子
+    },
+    handleMaxSize(file) {
+      this.$Notice.warning({
+        title: '文件超出限制大小',
+        desc: '文件  ' + file.name + '不能超过20M.'
+      })
+    },
+    handleSuccess(res, file) { // 文件上传成功钩子
+      if (res.code === '200') {
+        this.$Notice.success({
+          title: '患者数据导入',
+          desc: '上传excel数据成功',
+          duration: 5
+        })
+        } else {
+          this.$Notice.error({
+            title: '上传失败',
+            desc: `${res.message}`,
+          duration: 5
+          })
+        }
+    },
+    handleError(res, file) {
+      this.$Notice.error({
+        title: '上传失败',
+        desc: `${res.message}`,
+        duration: 5
+      })
+    },
+  },
+  components: {
+    KaolaNav,
+    KaolaFooter
+  }
+}
+</script>
+<style lang="stylus">
+.p-wrapper
+  position relative
+  display flex
+  flex-direction column
+  margin-top 32px
+  background-color #f8fafc
+  .main
+    flex 1
+    margin 32px auto
+    .bg
+      height 120px
+      width 100%
+      // background-color #5FC3E4
+      // background-image linear-gradient(160deg, #E55D87, #5FC3E4)
+      h2
+        display inline-block
+        font-size 24px
+        color #07111B
+        margin-top 16px
+        font-weight 700
+        padding 16px 0 32px
+        text-align center
+    .container
+      width 80%
+      margin 0 auto
+      background #ffffff
+      box-shadow 0 8px 16px 0 rgba(7,17,27,.05)
+      padding 32px
+      border-radius 8px
+      @media screen and (max-width: 440px)
+        width 100%
+      .title
+        position relative
+        margin 16px 0 32px
+        text-align left
+        span
+          font-size 14px
+          line-height 28px
+          color #002500
+          margin-right 8px
+        li
+          display inline-block
+          margin 8px 8px 0 0
+          background rgba(7,17,27,0.05)
+          color #4D555D
+          padding 0 12px
+          height 24px
+          line-height 24px
+          cursor pointer
+          border-radius 12px
+          &:hover
+            background rgba(7,17,27,0.1)
+            color #07111b
+        .selectTagClass
+          color #ffffff
+          background #93999F
+          &:hover
+            color #ffffff
+            background #93999F
+      .quill-editor
+        min-height 200px
+        max-height 400px
+        overflow-y auto
+</style>
