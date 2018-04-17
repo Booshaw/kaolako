@@ -36,6 +36,7 @@
         <div class="title">
           <span>文章封面</span>
           <Upload
+            :with-credentials="true"
             :show-upload-list="false"
             :default-file-list="defaultList"
             :on-success="handleSuccess"
@@ -45,9 +46,13 @@
             :on-exceeded-size="handleMaxSize"
             :before-upload="handleBeforeUpload"
             action="http://kaola.eaon.win:8080/kaola/common/file/upload">
-            <div style="padding: 20px 0">
-                <Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
-                <p>尺寸为200*200像素，格式为 PNG/JPG/GIF,小于等于80KB</p>
+            <div class="logo-img">
+              <img height="400" width="220" :src="thumbnailUrl" alt="手记缩略图" v-if="thumbnailUrl">
+              <div v-else>上传手记封面图</div>
+              <div class="upload-list-cover">
+                <Icon type="camera"></Icon>
+                <!-- <span type="ios-trash-outline" @click.native="uploadLogo()">上传Logo</span> -->
+              </div>
             </div>
           </Upload>
         </div>
@@ -82,6 +87,7 @@ export default {
       tagCurrent: [], // 选中标签列表
       loading: false, // 发布手记加载中
       thumbnail: '', // 缩略图id
+      thumbnailUrl: '', // 缩略图url
       categoryCurrent: 0,
       defaultList: [],
       content: '<p>I am Example</p>',
@@ -139,7 +145,7 @@ export default {
     //   }
     // }
     ...mapGetters({
-      cookie: 'login/cookie'
+      cookie: 'cookie'
     })
   },
   methods: {
@@ -178,7 +184,7 @@ export default {
           content: this.content
         })
       .then(res => {
-        if(res.status === '200') {
+        if(res.data.code === '200') {
           this.loading = false
           this.$Notice.info('操作成功')
         }
@@ -238,6 +244,8 @@ export default {
           desc: '上传excel数据成功',
           duration: 5
         })
+        this.thumbnailUrl = res.data.url
+        this.thumbnail = res.data.id
         } else {
           this.$Notice.error({
             title: '上传失败',
@@ -320,6 +328,35 @@ export default {
           &:hover
             color #ffffff
             background #93999F
+        .logo-img
+          position relative
+          display inline-block
+          width 400px
+          height 220px
+          text-align center
+          line-height 120px
+          border 1px solid transparent
+          // border-radius 50%
+          overflow hidden
+          background #f8f8f9
+          box-shadow 0 1px 1px rgba(0,0,0,0.2)
+          cursor pointer
+          img
+            width 100%
+            height 100%
+          &:hover
+            .upload-list-cover
+              display block
+          .upload-list-cover
+            display none
+            position absolute
+            color #ffffff
+            font-size 2rem
+            top 0
+            bottom 0
+            left 0
+            right 0
+            background rgba(0,0,0,.6)
       .quill-editor
         min-height 200px
         max-height 400px

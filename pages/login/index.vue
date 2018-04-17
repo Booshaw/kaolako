@@ -46,8 +46,9 @@ export default {
         // }
       }
   },
-  created() {
-    this.$store.commit('login/login',this.cookie)    
+  mounted() {
+    this.$store.commit('setCookie', this.cookie)
+    console.log(this.cookie)
   },
   methods: {
     login() {
@@ -57,14 +58,17 @@ export default {
         password: this.password
       })
       .then(res => {
-        if(res.status === '200') {
+        if(res.data.code === '200') {
           this.$Notice.info('操作成功')
-          this.cookie = res.headers.Cookie
+          // this.cookie = res.headers.Cookie
           console.log(res.headers)
-          this.$store.commit('login/login',this.cookie)
+          // this.$store.commit('login/sigin',this.cookie)
         }
       })
     }
+  },
+  computed: {
+
   },
   components: {
     KaolaNav,
