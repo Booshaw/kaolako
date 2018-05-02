@@ -63,7 +63,7 @@ import Service from '~/plugins/axios'
     asyncData () {
       return Service.get(`https://easy-mock.com/mock/5ac20177470d657aa5c1dd51/kaolako/homePage`)
       .then((res) => {
-        return { 
+        return {
           playerOptions: res.data.data.sectionVideo.playerOptions,
           sectionInformation: res.data.data.sectionVideo.information}
       })
