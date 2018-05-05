@@ -97,7 +97,7 @@ export default {
       top 30%
       left 50%
       transform translate(-50%, -30%)
-      width 45%
+      width 30%
       // margin 48px auto
       // background #ffffff
       border-radius 8px
