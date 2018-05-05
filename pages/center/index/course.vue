@@ -1,5 +1,5 @@
 <template>
-  <section class="c-container">
+  <section class="c-course-container">
     <div class="c-content">
       <div class="item" v-for="(item, index) in personalInfo.timeLineList" :key="index" >
         <div class="box" @click="toCourseDetail(item)" v-if="item.type === 2">
@@ -65,7 +65,7 @@ export default {
 }
 </script>
 <style lang="stylus">
-.c-container
+.c-course-container
   position relative
   height 100%
   width 100%
@@ -173,7 +173,9 @@ export default {
         // margin 8px
         overflow hidden
         border-bottom 1px solid #d9dde1
-        padding 16px 0
+        padding 16px
+        background-color #f8f8f9
+        border-radius 8px
         &:hover
           cursor pointer
         .category-box

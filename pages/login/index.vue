@@ -1,5 +1,5 @@
 <template>
-  <section class="container">
+  <section class="l-container">
     <kaola-nav></kaola-nav>
     <div class="main">
       <div class="login-wrapper">
@@ -61,6 +61,9 @@ export default {
         if(res.data.code === '200') {
           this.$Notice.info('操作成功')
           // this.cookie = res.headers.Cookie
+          this.$router.push({
+            path: '/center'
+          })
           console.log(res.headers)
           // this.$store.commit('login/sigin',this.cookie)
         }
@@ -77,7 +80,7 @@ export default {
 }
 </script>
 <style lang="stylus">
-.container
+.l-container
   position relative
   text-align center
   margin-top 60px

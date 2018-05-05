@@ -195,7 +195,9 @@ export default {
         // margin 8px
         overflow hidden
         border-bottom 1px solid #d9dde1
-        padding 16px 0
+        padding 16px
+        background-color #f8f8f9
+        border-radius 8px
         &:hover
           cursor pointer
         .category-box
