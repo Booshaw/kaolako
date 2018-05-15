@@ -11,11 +11,12 @@
             <i-input v-model="password" placeholder="密码" type="password"></i-input>  
           </FormItem>
           <Button type="primary" size="large" @click.stop="login">登录</Button>
+          <!-- <Button type="info" size="large" @click.stop="wechatHandleClick" style="margin-left:10px">微信登录</Button> -->
         </Form>
         <div>
           <ul class="text">
             <li>忘记密码</li>
-            <li>马上注册</li>
+            <li> <a href="">注册暂未开放,点击微信登录</a> </li>
           </ul>
           </div>
       </div>
@@ -68,7 +69,9 @@ export default {
           // this.$store.commit('login/sigin',this.cookie)
         }
       })
-    }
+    },
+    wechatHandleClick() {
+    },
   },
   computed: {
 

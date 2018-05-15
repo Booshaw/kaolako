@@ -3,7 +3,7 @@
     <div class="j-nav" ref="menuButton" @click="toggleNavMobile">
       <row>
         <i-col span="20" class="title-wrapper">
-          <span class="logo-mobile">JAHUAN</span>
+          <span class="logo-mobile">LOGO</span>
         </i-col>
         <i-col span="4">
           <Icon type="android-menu"></Icon>
