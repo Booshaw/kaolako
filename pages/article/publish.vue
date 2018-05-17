@@ -22,15 +22,15 @@
           </div>
         </div>
         <div class="title">
-          <span>标签</span> <span>{{tagCurrent.length}}/3</span>
-          <ul>
-            <li v-for="(item, index) in tagList" :key="index" @click="selectTagGrou(item)" :class="{selectTagClass: (tagCurrent.indexOf(item.id))!== -1}">{{item.name}}</li>
-          </ul>
-        </div>
-        <div class="title">
           <span>分类</span>
           <ul>
             <li v-for="(item, index) in categoryList" :key="index" @click="selectCategory(item)" :class="{selectTagClass: item.id === categoryCurrent}">{{item.name}}</li>
+          </ul>
+        </div>
+        <div class="title">
+          <span>标签</span> <span>{{tagCurrent.length}}/3(最多选三个)</span>
+          <ul>
+            <li v-for="(item, index) in tagList" :key="index" @click="selectTagGrou(item)" :class="{selectTagClass: (tagCurrent.indexOf(item.id))!== -1}">{{item.name}}</li>
           </ul>
         </div>
         <div class="title">
@@ -79,7 +79,7 @@ import KaolaFooter from '~/components/KaolaFooter.vue'
 import Service from '~/plugins/axios'
 import { mapGetters } from 'vuex'
 export default {
-  data () {
+  data() {
     return {
       title: '', // 文章标题
       tagList: [], // 标签列表
@@ -97,33 +97,33 @@ export default {
           toolbar: [
             ['bold', 'italic', 'underline', 'strike'],
             ['blockquote', 'code-block'],
-            [{ 'header': 1 }, { 'header': 2 }],
-            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-            [{ 'script': 'sub' }, { 'script': 'super' }],
-            [{ 'indent': '-1' }, { 'indent': '+1' }],
-            [{ 'direction': 'rtl' }],
-            [{ 'size': ['small', false, 'large', 'huge'] }],
-            [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-            [{ 'font': [] }],
-            [{ 'color': [] }, { 'background': [] }],
-            [{ 'align': [] }],
+            [{ header: 1 }, { header: 2 }],
+            [{ list: 'ordered' }, { list: 'bullet' }],
+            [{ script: 'sub' }, { script: 'super' }],
+            [{ indent: '-1' }, { indent: '+1' }],
+            [{ direction: 'rtl' }],
+            [{ size: ['small', false, 'large', 'huge'] }],
+            [{ header: [1, 2, 3, 4, 5, 6, false] }],
+            [{ font: [] }],
+            [{ color: [] }, { background: [] }],
+            [{ align: [] }],
             ['clean'],
             ['link', 'image', 'video']
           ]
-            // history: {
-            //   delay: 1000,
-            //   maxStack: 50,
-            //   userOnly: false
-            // },
-            // imageDrop: true,
-            // imageResize: {
-            //   displayStyles: {
-            //     backgroundColor: 'black',
-            //     border: 'none',
-            //     color: 'white'
-            //   },
-            //   modules: [ 'Resize', 'DisplaySize', 'Toolbar' ]
-            // }
+          // history: {
+          //   delay: 1000,
+          //   maxStack: 50,
+          //   userOnly: false
+          // },
+          // imageDrop: true,
+          // imageResize: {
+          //   displayStyles: {
+          //     backgroundColor: 'black',
+          //     border: 'none',
+          //     color: 'white'
+          //   },
+          //   modules: [ 'Resize', 'DisplaySize', 'Toolbar' ]
+          // }
         }
       }
     }
@@ -150,22 +150,23 @@ export default {
   },
   methods: {
     _getTagList() {
-      return Service.get(`https://easy-mock.com/mock/5ac20177470d657aa5c1dd51/kaolako/homePage`)
-      .then((res) => {
+      return Service.get(
+        `https://easy-mock.com/mock/5ac20177470d657aa5c1dd51/kaolako/homePage`
+      ).then(res => {
         if (res.data.code === 200) {
           console.log(res)
-          this.tagList = res.data.data.tagList,
-          this.categoryList = res.data.data.categoryList
+          ;(this.tagList = res.data.data.tagList),
+            (this.categoryList = res.data.data.categoryList)
         }
       })
     },
     selectTagGrou(item) {
-        // if(this.tagCurrent.indexOf(item.id) === -1) {
-        //   console.log(i)
-        // }
-      
+      // if(this.tagCurrent.indexOf(item.id) === -1) {
+      //   console.log(i)
+      // }
+
       let index = this.tagCurrent.indexOf(item.id)
-      if(index === -1) {
+      if (index === -1) {
         this.tagCurrent.push(item.id)
       } else {
         this.tagCurrent.splice(index, 1)
@@ -175,16 +176,14 @@ export default {
     },
     updateArticle() {
       this.loading = true
-      return Service.post('http://kaola.eaon.win:8080/kaola/user/article/add',
-        {
-          title: this.title,
-          thumbnail: this.thumbnail,
-          category: this.categoryCurrent,
-          tag: this.tagCurrent,
-          content: this.content
-        })
-      .then(res => {
-        if(res.data.code === '200') {
+      return Service.post('http://kaola.eaon.win:8080/kaola/user/article/add', {
+        title: this.title,
+        thumbnail: this.thumbnail,
+        category: this.categoryCurrent,
+        tag: this.tagCurrent,
+        content: this.content
+      }).then(res => {
+        if (res.data.code === '200') {
           this.loading = false
           this.$Notice.info('操作成功')
         }
@@ -212,24 +211,25 @@ export default {
       // console.log(item)
     },
     onEditorBlur(editor) {
-        // console.log('editor blur!', editor)
-      },
-      onEditorFocus(editor) {
-        // console.log('editor focus!', editor)
-      },
-      onEditorReady(editor) {
-        // console.log('editor ready!', editor)
-      },
-      onEditorChange({ editor, html, text }) {
-        // console.log('editor change!', editor, html, text)
-        this.content = html
-      },
-
-      
-    // 文件上传
-    handleBeforeUpload() { // 上传前钩子
+      // console.log('editor blur!', editor)
     },
-    handleFormatError() { // 格式化检查钩子
+    onEditorFocus(editor) {
+      // console.log('editor focus!', editor)
+    },
+    onEditorReady(editor) {
+      // console.log('editor ready!', editor)
+    },
+    onEditorChange({ editor, html, text }) {
+      // console.log('editor change!', editor, html, text)
+      this.content = html
+    },
+
+    // 文件上传
+    handleBeforeUpload() {
+      // 上传前钩子
+    },
+    handleFormatError() {
+      // 格式化检查钩子
     },
     handleMaxSize(file) {
       this.$Notice.warning({
@@ -237,7 +237,8 @@ export default {
         desc: '文件  ' + file.name + '不能超过20M.'
       })
     },
-    handleSuccess(res, file) { // 文件上传成功钩子
+    handleSuccess(res, file) {
+      // 文件上传成功钩子
       if (res.code === '200') {
         this.$Notice.success({
           title: '患者数据导入',
@@ -246,13 +247,13 @@ export default {
         })
         this.thumbnailUrl = res.data.url
         this.thumbnail = res.data.id
-        } else {
-          this.$Notice.error({
-            title: '上传失败',
-            desc: `${res.message}`,
+      } else {
+        this.$Notice.error({
+          title: '上传失败',
+          desc: `${res.message}`,
           duration: 5
-          })
-        }
+        })
+      }
     },
     handleError(res, file) {
       this.$Notice.error({
@@ -260,7 +261,7 @@ export default {
         desc: `${res.message}`,
         duration: 5
       })
-    },
+    }
   },
   components: {
     KaolaNav,
@@ -295,7 +296,7 @@ export default {
       width 80%
       margin 0 auto
       background #ffffff
-      box-shadow 0 8px 16px 0 rgba(7,17,27,.05)
+      box-shadow 0 8px 16px 0 rgba(7, 17, 27, 0.05)
       padding 32px
       border-radius 8px
       @media screen and (max-width: 440px)
@@ -312,7 +313,7 @@ export default {
         li
           display inline-block
           margin 8px 8px 0 0
-          background rgba(7,17,27,0.05)
+          background rgba(7, 17, 27, 0.05)
           color #4D555D
           padding 0 12px
           height 24px
@@ -320,7 +321,7 @@ export default {
           cursor pointer
           border-radius 12px
           &:hover
-            background rgba(7,17,27,0.1)
+            background rgba(7, 17, 27, 0.1)
             color #07111b
         .selectTagClass
           color #ffffff
@@ -339,7 +340,7 @@ export default {
           // border-radius 50%
           overflow hidden
           background #f8f8f9
-          box-shadow 0 1px 1px rgba(0,0,0,0.2)
+          box-shadow 0 1px 1px rgba(0, 0, 0, 0.2)
           cursor pointer
           img
             width 100%
@@ -356,7 +357,7 @@ export default {
             bottom 0
             left 0
             right 0
-            background rgba(0,0,0,.6)
+            background rgba(0, 0, 0, 0.6)
       .quill-editor
         min-height 200px
         max-height 400px
