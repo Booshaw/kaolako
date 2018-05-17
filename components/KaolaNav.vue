@@ -38,7 +38,7 @@ export default {
       navWidth: ''
     }
   },
-  created() {
+  mounted() {
     this.show()
     // this.toInfoPage()
   },
