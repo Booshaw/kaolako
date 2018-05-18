@@ -2,7 +2,7 @@
   <section class="c-wrapper">
     <kaola-nav class="nav"></kaola-nav>    
     <div class="main">
-      <div class="c-category">
+      <!-- <div class="c-category">
         <Tabs value="all" size="small" :animated="false">
           <TabPane label="全部" name="all"> </TabPane>
           <TabPane :label="item.categoryName" :name="index.toString()" v-for="(item, index) in courseCategoryList" :key="index">
@@ -11,6 +11,32 @@
             </ul>
           </TabPane>
         </Tabs>
+      </div> -->
+      <div class="c-category-box">
+        <Row>
+          <i-col :lg="8" :md="8" :xs="0" offset="2">
+            <h1 class="title"> <span class="icon"><Icon type="ios-flower"></Icon></span> 考拉课堂 <span class="slogn">轻松考试<Icon type="link"></Icon>为梦想加油</span>  </h1>
+          </i-col>
+          <i-col :lg="14" :md="14" :xs="24">
+            <div class="search-box">
+              <i-input v-model="search" placeholder="搜索感兴趣的内容">
+                <Button slot="append" icon="ios-search"></Button>
+              </i-input>
+            </div>
+          </i-col>
+        </Row>
+      </div>
+      <div class="category-list">
+        <ul>
+          <li v-for="(item, index) in categoryList" :key="index" :class="{selectCategoryClass: item.id === categoryCurrent}" @click.stop="selectCategory(item)" class="category-li">{{item.name}}</li>
+          <!-- <li @click.stop="moreCategory = !moreCategory" class="arrow" v-if="categoryList.length && moreCategoryIcon && categoryList.length > 6"><Icon type="chevron-down"></Icon></li> -->
+        </ul>
+      </div>
+      <div class="tag-list">
+        <ul>
+          <li v-for="(item, index) in tagList" :key="index" :class="{selectTagClass: item.id === tagCurrent}" @click.stop="selectTag(item)" class="tag-li">{{item.name}}</li>
+          <!-- <li @click.stop="moreTag = !moreTag" class="arrow"><Icon type="chevron-down"></Icon></li>           -->
+        </ul>
       </div>
       <div class="content">
         <div class="content-wrapper">
@@ -57,14 +83,24 @@ import KaolaNav from '~/components/KaolaNav.vue'
 import KaolaFooter from '~/components/KaolaFooter.vue'
 import Service from '~/plugins/axios'
 export default {
-  data () {
+  data() {
     return {
+      clientWidth: null, // 浏览器宽度
       totalRecord: 100,
       pageShow: false,
       page: 1,
       pageSize: 12,
       courseList: [],
-      courseCategoryList: []
+      courseCategoryList: [],
+      search: '', // 搜索内容
+      categoryList: [], // 分类列表
+      categoryCurrent: 0, // 选择的分类
+      moreCategoryIcon: false, // 更多分类icon
+      moreCategory: false, // 更多分类显示
+      tagList: [], // 标签分类
+      moreTagIcon: false, // 更多标签icon      
+      tagCurrent: 0, // 选择的标签
+      moreTag: false // 更多标签显示
     }
   },
   // asyncData() {
@@ -79,13 +115,21 @@ export default {
   created() {
     this._getCourseList()
   },
+  mounted() {
+    this.getWidth()
+    this.initMoreArrow()
+  },
   methods: {
     _getCourseList() {
-      return Service.get(`https://easy-mock.com/mock/5ac20177470d657aa5c1dd51/kaolako/homePage`)
-      .then((res) => {
-        console.log(res)
+      return Service.get(
+        `https://easy-mock.com/mock/5ac20177470d657aa5c1dd51/kaolako/homePage`
+      ).then(res => {
+        // console.log(res)
         if (res.data.code === 200) {
           this.courseList = res.data.data.courseLists
+          this.tagList = res.data.data.tagList
+          this.categoryList = res.data.data.categoryList
+          console.log(this.categoryList.length)
           this.pageShow = true
           this.courseCategoryList = res.data.data.courseCategoryList
         }
@@ -94,10 +138,11 @@ export default {
     toCourseDetail(item) {
       this.$router.push({
         path: '/course/courseDetail',
-        query: {id: item.id}
+        query: { id: item.id }
       })
     },
-    pageNum(page) { // 分页插件获取点击page页码
+    pageNum(page) {
+      // 分页插件获取点击page页码
       this.page = page
       this._getCourseList()
     },
@@ -105,6 +150,29 @@ export default {
       this.pageSize = size
       this._getCourseList()
     },
+    selectCategory(item) {
+      this.categoryCurrent = item.id
+    },
+    selectTag(item) {
+      this.tagCurrent = item.id
+    },
+    getWidth() {
+      let width =
+        window.innerWidth ||
+        document.documentElement.clientWidth ||
+        document.body.clientWidth
+        // console.log(this.clientWidth)
+        this.clientWidth = width
+      if (width <= 680) {
+        this.moreTagIcon = true,
+        this.moreCategoryIcon = true
+      }
+      // console.log(this.moreCategoryIcon)
+    },
+    initMoreArrow() {
+      console.log(this.clientWidth)
+      console.log(`长度为${this.categoryList}`)
+    }
   },
   components: {
     // AppLogo,
@@ -137,10 +205,98 @@ export default {
           display inline-block
           margin 8px
           font-size 12px
+    .c-category-box
+      // height 132px
+      background url('/static/sz-header-bk.png') center center no-repeat
+      background-size cover
+      box-sizing border-box
+      .title
+        margin 20px 0
+        padding 0 20px
+        color #ffffff
+        font-size 32px
+        .icon
+          color #ed3f14
+          font-size 36px
+        .slogn
+          font-size 14px
+      .search-box
+        margin 0 auto
+        padding 35px 0
+        width 60%
+    .category-list
+      margin 20px auto
+      border-bottom 1px solid #eeeeee
+      box-shadow: 0 8px 16px 0 rgba(28, 31, 33, 0.1)
+      ul
+        width 80%
+        margin 0 auto
+        text-align left
+        @media screen and (max-width: 440px)
+          width 100%
+        .category-li
+          display inline-block
+          color #07111b
+          font-size 16px
+          line-height 40px
+          font-weight bold
+          margin-right 48px
+          @media screen and (max-width: 440px)
+            margin 0 8px
+            font-size 14px
+          &:hover
+            cursor pointer
+            color #f01414
+        .arrow
+          display inline-block
+        .selectCategoryClass
+          color #f01414
+          &:hover
+            color #f01414
+      .more-category-box
+        text-align left
+    .tag-list
+      margin 20px 0
+      border-bottom 1px solid #eeeeee
+      text-align left
+      ul
+        width 80%
+        margin 0 auto
+        @media screen and (max-width: 440px)
+          width 100%
+        .tag-li
+          display inline-block
+          color #4d555d
+          font-size 14px
+          padding 0 12px
+          line-height 32px
+          margin 0 14px 14px 0
+          border-radius 16px
+          @media screen and (max-width: 440px)
+            margin 0 8px
+            font-size 14px
+          &:hover
+            cursor pointer
+            background-color #D9DDE1
+        .arrow
+          display inline-block
+          &:hover
+            cursor pointer
+            color #f01414
+        .selectTagClass
+          color #ffffff
+          background-color #2b333b
+          &:hover
+            cursor pointer
+            background-color #2b333b
+      .more-tag-box
+        text-align left
+        li
+          display inline-block
     .content
       width 80%
       margin 16px auto
-      @media screen and (max-width:440px)
+      @media screen and (max-width: 440px)
         width 100%
         padding 16px
       .content-wrapper
@@ -159,7 +315,7 @@ export default {
             cursor pointer
           .category-box
             position relative
-            transition .3s all linear
+            transition 0.3s all linear
             height 130px
             max-height 148px
             background-color #eeeeee
@@ -167,7 +323,7 @@ export default {
             .category-gradient
               position absolute
               z-index 0
-              background-image linear-gradient(-180deg, rgba(7,17,27,0) 0%, rgba(7,17,27,0.6) 97%)
+              background-image linear-gradient(-180deg, rgba(7, 17, 27, 0) 0%, rgba(7, 17, 27, 0.6) 97%)
               border-radius 12px
               left 0
               bottom 0
@@ -195,7 +351,7 @@ export default {
                 font-size 14px
                 color #ffffff
                 line-height 18px
-                text-shadow 0 2px 4px rgba(7,17,27,0.5)
+                text-shadow 0 2px 4px rgba(7, 17, 27, 0.5)
                 font-weight 700
           .categor-intro-box
             position relative
@@ -232,7 +388,7 @@ export default {
               word-break break-all
               word-wrap break-word
               overflow hidden
-              transition .3s all linear
+              transition 0.3s all linear
               text-overflow -o-ellipsis-lastline
               display -webkit-box
               -webkit-line-clamp 2
