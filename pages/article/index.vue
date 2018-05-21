@@ -120,6 +120,7 @@ export default {
           // this.tagList = res.data.data.tagList
           // this.categoryList = res.data.data.categoryList
           this.pop = res.data.data.pageData.slice(0, 10)
+          this.totalRecord = res.data.data.totalRecord          
           // this.courseCategoryList = res.data.data.courseCategoryList
           this.pageShow = true
         }
