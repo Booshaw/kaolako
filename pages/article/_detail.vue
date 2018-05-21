@@ -64,20 +64,36 @@ export default {
   },
   created() {
     this._getArticle()
-    this._getArticleList()
+    // this._getArticleList()
+    this._getPop()
   },
   methods: {
     _getArticle() {
-    return Service.get(`https://easy-mock.com/mock/5ac20177470d657aa5c1dd51/kaolako/homePage`)
+    return Service.post(`http://api.kaolako.com/kaola/web/article/get`,{
+      id: this.$route.query.id
+    })
     .then((res) => {
-      if (res.data.code === 200) {
-        this.article = res.data.data.articleDetail
-        this.pop = res.data.data.articleList
+      if (res.data.code === '200') {
+        this.article = res.data.data
+        // this.pop = res.data.data
         this.pageShow = true
       }
     })
     },
-    _getArticleList() {
+    _getPop() {
+      return Service.post(`http://api.kaolako.com/kaola/web/article/list`).then(
+        res => {
+          console.log(res)
+          if (res.data.code === '200') {
+            // this.articleList = res.data.data.pageData
+            // this.tagList = res.data.data.tagList
+            // this.categoryList = res.data.data.categoryList
+            this.pop = res.data.data.pageData.slice(0,10)
+            // this.courseCategoryList = res.data.data.courseCategoryList
+            this.pageShow = true
+          }
+        }
+      )
     },
     hiddenAdv() {
       this.showAdv = !this.showAdv

@@ -4,8 +4,8 @@
       <h3 class="item-title" @click="selectItem(item)">{{item.title}}</h3>
       <!--text-->
       <div class="item-digest-wrapper">
-        <div class="img-link" v-if="item.image" @click="selectItem(item)">
-          <img :src="item.image" alt="考拉课">
+        <div class="img-link" v-if="item.thumbnailUrl" @click="selectItem(item)">
+          <img :src="item.thumbnailUrl" alt="考拉课">
         </div>
         <p class="item-digest">
           {{item.summary}}
