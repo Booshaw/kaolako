@@ -5,6 +5,7 @@
       <div class="box">
         <span @click.stop="backSection" class="back"><Icon type="chevron-left"></Icon></span>
         <h1 class="s-title">{{sectionInformation.title}}<span>{{sectionInformation.number}}</span> <span>{{sectionInformation.children}}</span></h1>
+        <Button type="ghost" size="small" shape="circle" class="next-bt" @click.stop="toNextVideo">下一小节</Button>
       </div>
     </div>
     <div class="main">
@@ -46,25 +47,34 @@ import Service from '~/plugins/axios'
         playsinline: true,
         
         // videojs options
-        // playerOptions: {
-        //   muted: true,
-        //   width: 600,
-        //   height: 600,
-        //   language: 'zh-CH',
-        //   playbackRates: [0.7, 1.0, 1.5, 2.0],
-        //   sources: [{
-        //     type: "video/mp4",
-        //     src: "https://cdn.theguardian.tv/webM/2015/07/20/150716YesMen_synd_768k_vp8.webm"
-        //   }],
-        //   poster: "/static/videoBG.jpeg",
-        // }
+        playerOptions: {
+          muted: false,
+          fluid: true,
+          aspectRatio: '16:9',
+          language: 'zh-CH',
+          playbackRates: [0.7, 1.0, 1.5, 2.0],
+          sources: [{
+            type: "video/mp4",
+            src: "https://cdn.theguardian.tv/webM/2015/07/20/150716YesMen_synd_768k_vp8.webm"
+          }],
+          poster: "/static/videoBG.jpeg",
+          controlBar: {
+          timeDivider: true,
+          durationDisplay: true,
+          remainingTimeDisplay: false,
+          fullscreenToggle: true  //全屏按钮
+        }
+        },
+        // 播放下一小节
+        nextVideoId: '', // 下一小节videoId
+        nextBox: false
       }
     },  
     asyncData () {
       return Service.get(`https://easy-mock.com/mock/5ac20177470d657aa5c1dd51/kaolako/homePage`)
       .then((res) => {
         return {
-          playerOptions: res.data.data.sectionVideo.playerOptions,
+          // playerOptions: res.data.data.sectionVideo.playerOptions,
           sectionInformation: res.data.data.sectionVideo.information}
       })
     },
@@ -82,12 +92,14 @@ import Service from '~/plugins/axios'
       // listen event
       onPlayerPlay(player) {
         // console.log('player play!', player)
+        this.nextBox = false
       },
       onPlayerPause(player) {
         // console.log('player pause!', player)
       },
       onPlayerEnded(player) {
         // console.log('player ended!', player)
+        this.nextBox = true
       },
       onPlayerLoadeddata(player) {
         // console.log('player Loadeddata!', player)
@@ -109,11 +121,17 @@ import Service from '~/plugins/axios'
       },
       // or listen state event
       playerStateChanged(playerCurrentState) {
-        console.log('player current update state', playerCurrentState)
+        // console.log('player current update state', playerCurrentState)
       },
       // player is ready
       playerReadied(player) {
-        console.log('example 01: the player is readied', player)
+        // console.log('example 01: the player is readied', player)
+      },
+      toNextVideo() {
+        this.$router.push({
+          path: '/',
+          id: this.nextVideoId
+        })
       }
     },
     components: {
@@ -139,6 +157,8 @@ import Service from '~/plugins/axios'
         font-size 12px
         color #ffffff
         overflow hidden
+        @media screen and (max-width: 440px)
+          width 100%
         .back
           padding 8px
           display inline-block
@@ -151,6 +171,9 @@ import Service from '~/plugins/axios'
             margin 0 8px
             color #787d82
             font-size 12px
+        .next-bt
+          color #ffffff
+          margin 0 0 0 100px
     .main
       flex 1
       .video-player-box 
