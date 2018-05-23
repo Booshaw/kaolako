@@ -110,11 +110,10 @@ export default {
   },
   methods: {
     toCourseDetail(i) {
-      console.log(i)
+      // console.log(i)
       this.$router.push({
         path: '/course/courseDetail',
         query: { id: i.id }
-
       })
     }
   },

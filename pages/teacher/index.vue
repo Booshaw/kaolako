@@ -110,6 +110,10 @@ export default {
         }
       })
     },
+    selectCategory(item) {
+      this.categoryCurrent = item.id
+      this._getTeacherList()
+    },
     toTeacherInfo(t) {
       this.$router.push({
         path: '/teacher/detail',
