@@ -14,10 +14,10 @@
       </div> -->
       <div class="c-category-box">
         <Row>
-          <i-col :lg="8" :md="8" :xs="0" offset="2">
+          <i-col :lg="10" :md="10" :xs="0" offset="2">
             <h1 class="title"> <span class="icon"><Icon type="ios-flower"></Icon></span> 考拉课堂 <span class="slogn">轻松考试<Icon type="link"></Icon>为梦想加油</span>  </h1>
           </i-col>
-          <i-col :lg="14" :md="14" :xs="24">
+          <i-col :lg="12" :md="12" :xs="24">
             <div class="search-box">
               <i-input v-model="search" placeholder="搜索感兴趣的内容">
                 <Button slot="append" icon="ios-search"></Button>
@@ -32,12 +32,11 @@
           <!-- <li @click.stop="moreCategory = !moreCategory" class="arrow" v-if="categoryList.length && moreCategoryIcon && categoryList.length > 6"><Icon type="chevron-down"></Icon></li> -->
         </ul>
       </div>
-      <div class="tag-list">
+      <!-- <div class="tag-list">
         <ul>
           <li v-for="(item, index) in tagList" :key="index" :class="{selectTagClass: item.id === tagCurrent}" @click.stop="selectTag(item)" class="tag-li">{{item.name}}</li>
-          <!-- <li @click.stop="moreTag = !moreTag" class="arrow"><Icon type="chevron-down"></Icon></li>           -->
         </ul>
-      </div>
+      </div> -->
       <div class="content">
         <div class="content-wrapper">
           <Row>
@@ -94,12 +93,12 @@ export default {
       courseCategoryList: [],
       search: '', // 搜索内容
       categoryList: [], // 分类列表
-      categoryCurrent: 0, // 选择的分类
+      categoryCurrent: 2, // 选择的分类
       moreCategoryIcon: false, // 更多分类icon
       moreCategory: false, // 更多分类显示
       tagList: [], // 标签分类
-      moreTagIcon: false, // 更多标签icon      
-      tagCurrent: 0, // 选择的标签
+      moreTagIcon: false, // 更多标签icon
+      tagCurrent: 2, // 选择的标签
       moreTag: false // 更多标签显示
     }
   },
@@ -114,24 +113,34 @@ export default {
   // },
   created() {
     this._getCourseList()
+    this._getCategoryTag()
   },
   mounted() {
     this.getWidth()
     this.initMoreArrow()
   },
   methods: {
+     _getCategoryTag() {
+      return Service.post(`http://api.kaolako.com/kaola/common/dict/get`, {
+        dictType: ['courseCategory']
+      }).then(res => {
+        if ((res.code = '200')) {
+          this.categoryList = res.data.data.courseCategory
+        }
+      })
+    },
     _getCourseList() {
-      return Service.get(
-        `https://easy-mock.com/mock/5ac20177470d657aa5c1dd51/kaolako/homePage`
-      ).then(res => {
+      return Service.post(`http://api.kaolako.com/kaola/web/course/list`, {
+        category: this.categoryCurrent,
+        // tag: this.tagCurrent,
+        page: this.page,
+        pageSize: this.pageSize
+      }).then(res => {
         // console.log(res)
-        if (res.data.code === 200) {
-          this.courseList = res.data.data.courseLists
-          this.tagList = res.data.data.tagList
-          this.categoryList = res.data.data.categoryList
-          console.log(this.categoryList.length)
+        if (res.data.code === '200') {
+          this.courseList = res.data.data.pageData
+          this.totalRecord = res.data.data.totalRecord
           this.pageShow = true
-          this.courseCategoryList = res.data.data.courseCategoryList
         }
       })
     },
@@ -152,20 +161,18 @@ export default {
     },
     selectCategory(item) {
       this.categoryCurrent = item.id
-    },
-    selectTag(item) {
-      this.tagCurrent = item.id
+      console.log(this.categoryCurrent)
+      this._getCourseList()
     },
     getWidth() {
       let width =
         window.innerWidth ||
         document.documentElement.clientWidth ||
         document.body.clientWidth
-        // console.log(this.clientWidth)
-        this.clientWidth = width
+      // console.log(this.clientWidth)
+      this.clientWidth = width
       if (width <= 680) {
-        this.moreTagIcon = true,
-        this.moreCategoryIcon = true
+        ;(this.moreTagIcon = true), (this.moreCategoryIcon = true)
       }
       // console.log(this.moreCategoryIcon)
     },
@@ -227,7 +234,7 @@ export default {
     .category-list
       margin 20px auto
       border-bottom 1px solid #eeeeee
-      box-shadow: 0 8px 16px 0 rgba(28, 31, 33, 0.1)
+      box-shadow 0 8px 16px 0 rgba(28, 31, 33, 0.1)
       ul
         width 80%
         margin 0 auto
