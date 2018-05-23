@@ -61,19 +61,20 @@
         </i-col>
       </Row>
     </div>
-    <kaola-footer></kaola-footer>
+    <kaola-foo></kaola-foo>
   </div>
 </template>
 <script>
 import ArticleList from '~/components/articleList.vue'
 import PopList from '~/components/popList.vue'
 import KaolaNav from '~/components/KaolaNav.vue'
-import KaolaFooter from '~/components/KaolaFooter.vue'
+import KaolaFoo from '~/components/KaolaFoo.vue'
 import Service from '~/plugins/axios'
 export default {
   data() {
     return {
       loading: false,
+      noResult: false, // 查询无数据
       articles: [],
       totalRecord: null,
       page: 1,
@@ -109,13 +110,14 @@ export default {
       })
     },
     _getArticleList() {
+      this.noResult = false
+      this.loading = true
       return Service.post(`http://api.kaolako.com/kaola/web/article/list`, {
         category: this.categoryCurrent,
         tag: this.tagCurrent,
         page: this.page,
         pageSize: this.pageSize
       }).then(res => {
-        console.log(res)
         if (res.data.code === '200') {
           this.articleList = res.data.data.pageData
           // this.tagList = res.data.data.tagList
@@ -124,9 +126,8 @@ export default {
           this.totalRecord = res.data.data.totalRecord  
           this.loading = false        
           // this.courseCategoryList = res.data.data.courseCategoryList
-          if (res.data.data.pageData.length) {
-            this.pageShow = true
-          }
+        } else {
+          this.noResult = true
         }
       })
     },
@@ -161,7 +162,7 @@ export default {
   components: {
     ArticleList,
     KaolaNav,
-    KaolaFooter,
+    KaolaFoo,
     PopList
   }
 }

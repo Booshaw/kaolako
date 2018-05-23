@@ -98,7 +98,7 @@
 <script>
 // import AppLogo from '~/components/AppLogo.vue'
 import KaolaNav from '~/components/KaolaNav.vue'
-import KaolaFooter from '~/components/KaolaFooter.vue'
+import KaolaFoo from '~/components/KaolaFoo.vue'
 import Service from '~/plugins/axios'
 export default {
   data () {
@@ -123,7 +123,7 @@ export default {
   },
   components: {
     KaolaNav,
-    KaolaFooter
+    KaolaFoo
   }
 }
 </script>

@@ -51,12 +51,12 @@
         <Page :total="totalRecord" size="small" transfer show-elevator show-sizer @on-change="pageNum" @on-page-size-change="pageSizeNum"></Page>
       </div>
     </div>
-    <kaola-footer class="footer"></kaola-footer>
+    <kaola-foo class="footer"></kaola-foo>
   </section>
 </template>
 <script>
 import KaolaNav from '~/components/KaolaNav.vue'
-import KaolaFooter from '~/components/KaolaFooter.vue'
+import KaolaFoo from '~/components/KaolaFoo.vue'
 import Service from '~/plugins/axios'
 export default {
   data () {
@@ -128,7 +128,7 @@ export default {
   components: {
     // AppLogo,
     KaolaNav,
-    KaolaFooter
+    KaolaFoo
   }
 }
 </script>

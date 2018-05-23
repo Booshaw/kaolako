@@ -45,14 +45,14 @@
         </div>
       </i-col>
     </row>
-    <kaola-footer></kaola-footer>
+    <kaola-foo></kaola-foo>
   </div>
 </template>
 <script>
 // import ArticleList from '~/components/articleList.vue'
 import PopList from '~/components/popList.vue'
 import KaolaNav from '~/components/KaolaNav.vue'
-import KaolaFooter from '~/components/KaolaFooter.vue'
+import KaolaFoo from '~/components/KaolaFoo.vue'
 import Service from '~/plugins/axios'
 export default {
   data() {
@@ -119,7 +119,7 @@ export default {
   },
   components: {
     KaolaNav,
-    KaolaFooter,
+    KaolaFoo,
     PopList
   }
 }

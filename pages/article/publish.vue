@@ -64,12 +64,12 @@
         </div>
       </div>
     </div>
-    <kaola-footer></kaola-footer>
+    <kaola-foo></kaola-foo>
   </div>
 </template>
 <script>
 import KaolaNav from '~/components/KaolaNav.vue'
-import KaolaFooter from '~/components/KaolaFooter.vue'
+import KaolaFoo from '~/components/KaolaFoo.vue'
 // import hljs from 'highlight.js'
 // import VueQuillEditor, { Quill } from 'vue-quill-editor'
 // import { ImageDrop } from 'quill-image-drop-module'
@@ -265,7 +265,7 @@ export default {
   },
   components: {
     KaolaNav,
-    KaolaFooter
+    KaolaFoo
   }
 }
 </script>

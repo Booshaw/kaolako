@@ -28,14 +28,14 @@
         </i-col>
       </Row>
     </div>
-    <kaola-footer></kaola-footer>
+    <kaola-foo></kaola-foo>
   </section>
 </template>
 
 <script>
 // import AppLogo from '~/components/AppLogo.vue'
 import KaolaNav from '~/components/KaolaNav.vue'
-import KaolaFooter from '~/components/KaolaFooter.vue'
+import KaolaFoo from '~/components/KaolaFoo.vue'
 import AboutNav from '~/components/AboutNav.vue'
 export default {
   data () {
@@ -60,7 +60,7 @@ export default {
   components: {
     // AppLogo,
     KaolaNav,
-    KaolaFooter,
+    KaolaFoo,
     AboutNav
   }
 }

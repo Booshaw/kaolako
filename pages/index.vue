@@ -72,7 +72,7 @@
         </div>
       </div>
     </div>
-    <kaola-footer></kaola-footer>
+    <kaola-foo></kaola-foo>
   </section>
 </template>
 
@@ -80,7 +80,7 @@
 // import AppLogo from '~/components/AppLogo.vue'
 import KaolaNav from '~/components/KaolaNav.vue'
 import Banner from '~/components/banner.vue'
-import KaolaFooter from '~/components/KaolaFooter.vue'
+import KaolaFoo from '~/components/KaolaFoo.vue'
  import Service from '~/plugins/axios'
 export default {
   // name: 'index',
@@ -132,7 +132,7 @@ export default {
     // AppLogo,
     KaolaNav,
     Banner,
-    KaolaFooter
+    KaolaFoo
   }
 }
 </script>

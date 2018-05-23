@@ -55,7 +55,7 @@
                   <p class="course-title">{{item.title}}</p>
                   <div class="evaluation-box">
                     <Icon type="ios-person-outline"></Icon>
-                    <span>{{item.count}}</span>
+                    <span>{{item.viewCount}}</span>
                     <Rate show-text disabled v-model="item.rate">
                       <span style="color: #f5a623">{{item.rate}}</span>
                     </Rate>
@@ -69,24 +69,35 @@
           </Row>
         </div>
       </div>
+      <div v-if="loading">
+        <Spin fix>
+          <Icon type="load-c" size=18 class="icon-load"></Icon>
+          <div>Loading</div>
+        </Spin>
+      </div>
+      <div v-if="!courseList.length" class="no-result">
+        <p>哦豁,暂无数据</p>
+      </div>
       <!--pageNav-->
       <div class="pages-wrapper" v-if="pageShow">
         <Page :total="totalRecord" size="small" transfer show-elevator show-sizer @on-change="pageNum" @on-page-size-change="pageSizeNum"></Page>
       </div>
     </div>
-    <kaola-footer class="footer"></kaola-footer>
+    <kaola-foo class="footer"></kaola-foo>
   </section>
 </template>
 <script>
 import KaolaNav from '~/components/KaolaNav.vue'
-import KaolaFooter from '~/components/KaolaFooter.vue'
+import KaolaFoo from '~/components/KaolaFoo.vue'
 import Service from '~/plugins/axios'
 export default {
   data() {
     return {
       clientWidth: null, // 浏览器宽度
       totalRecord: 100,
-      pageShow: false,
+      pageShow: false, //分页显示
+      noResult: false, // 查询无数据
+      loading: false, // 加载
       page: 1,
       pageSize: 12,
       courseList: [],
@@ -130,17 +141,19 @@ export default {
       })
     },
     _getCourseList() {
+      this.noResult = false
+      this.loading = true
       return Service.post(`http://api.kaolako.com/kaola/web/course/list`, {
         category: this.categoryCurrent,
-        // tag: this.tagCurrent,
         page: this.page,
         pageSize: this.pageSize
       }).then(res => {
-        // console.log(res)
         if (res.data.code === '200') {
           this.courseList = res.data.data.pageData
           this.totalRecord = res.data.data.totalRecord
-          this.pageShow = true
+          this.loading = false
+        } else{
+          this.noResult = true
         }
       })
     },
@@ -184,7 +197,7 @@ export default {
   components: {
     // AppLogo,
     KaolaNav,
-    KaolaFooter
+    KaolaFoo
   }
 }
 </script>
@@ -401,6 +414,9 @@ export default {
               -webkit-line-clamp 2
               -webkit-box-orient vertical
               text-align left
+    .no-result
+      text-align center
+      padding 25% 0
   .footer
     flex 0 0 auto
   .ivu-rate

@@ -33,12 +33,12 @@
         </Tabs>
       </div>
     </div>
-    <kaola-footer></kaola-footer>
+    <kaola-foo></kaola-foo>
   </section>
 </template>
 <script>
 // import KaolaNav from '~/components/KaolaNav.vue'
-import KaolaFooter from '~/components/KaolaFooter.vue'
+import KaolaFoo from '~/components/KaolaFoo.vue'
 import Service from '~/plugins/axios'
   export default {
     data () {
@@ -157,7 +157,7 @@ import Service from '~/plugins/axios'
     },
     components: {
       // KaolaNav,
-      KaolaFooter
+      KaolaFoo
     }
   }
 </script>
