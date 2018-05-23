@@ -4,10 +4,10 @@
     <div class="top-box">
       <div class="c-category-box">
         <Row>
-          <i-col :lg="8" :md="8" :xs="0" offset="2">
+          <i-col :lg="10" :md="10" :xs="0" offset="2">
             <h1 class="title"> <span class="icon"><Icon type="ios-book"></Icon></span> 考拉干货 <span class="slogn">轻松考试<Icon type="link"></Icon>为梦想加油</span>  </h1>
           </i-col>
-          <i-col :lg="14" :md="14" :xs="24">
+          <i-col :lg="12" :md="12" :xs="24">
             <div class="search-box">
               <i-input v-model="search" placeholder="搜索感兴趣的内容">
                 <Button slot="append" icon="ios-search"></Button>
@@ -34,13 +34,13 @@
         <i-col :lg="18" :md="18" :sm="24" :xs="24">
           <div class="box">
             <article-list :articleList="articleList" @select="selectArticle"></article-list>
-            <div v-if="pageShow" class="no-result">
+            <div v-if="!pageShow" class="no-result">
               <p>哦豁,暂无数据</p>
             </div>
             <div class="pages-wrapper" v-if="pageShow">
               <Page :total="totalRecord" size="small" transfer show-elevator show-sizer @on-change="pageNum" @on-page-size-change="pageSizeNum"></Page>
             </div>
-            <div v-if="!pageShow">
+            <div v-if="loading">
               <Spin fix>
                 <Icon type="load-c" size=18 class="icon-load"></Icon>
                 <div>Loading</div>
@@ -73,6 +73,7 @@ import Service from '~/plugins/axios'
 export default {
   data() {
     return {
+      loading: false,
       articles: [],
       totalRecord: null,
       page: 1,
@@ -83,12 +84,12 @@ export default {
       courseCategoryList: [],
       search: '', // 搜索内容
       categoryList: [], // 分类列表
-      categoryCurrent: 1, // 选择的分类
+      categoryCurrent: 0, // 选择的分类
       moreCategoryIcon: false, // 更多分类icon
       moreCategory: false, // 更多分类显示
       tagList: [], // 标签分类
       moreTagIcon: false, // 更多标签icon
-      tagCurrent: 1, // 选择的标签
+      tagCurrent: 0, // 选择的标签
       moreTag: false // 更多标签显示
     }
   },
@@ -120,9 +121,12 @@ export default {
           // this.tagList = res.data.data.tagList
           // this.categoryList = res.data.data.categoryList
           this.pop = res.data.data.pageData.slice(0, 10)
-          this.totalRecord = res.data.data.totalRecord          
+          this.totalRecord = res.data.data.totalRecord  
+          this.loading = false        
           // this.courseCategoryList = res.data.data.courseCategoryList
-          this.pageShow = true
+          if (res.data.data.pageData.length) {
+            this.pageShow = true
+          }
         }
       })
     },
@@ -150,7 +154,8 @@ export default {
       this._getArticleList()
     },
     selectTag(item) {
-      ;(this.tagCurrent = item.id), this._getArticleList()
+      this.tagCurrent = item.id 
+      this._getArticleList()
     }
   },
   components: {
