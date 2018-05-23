@@ -128,16 +128,16 @@ export default {
 }
 </script>
 <style lang="stylus">
-.page-enter-active, .page-leave-active {
-  transition: opacity .4s, transform .4s;
-  transform-style: preserve-3d;
-  backface-visibility: hidden;
-  opacity: 1;
-}
-.page-enter, .page-leave-active {
-  opacity: 0.5;
-  transform: rotateY(100deg);
-}
+// .page-enter-active, .page-leave-active {
+//   transition: opacity .4s, transform .4s;
+//   transform-style: preserve-3d;
+//   backface-visibility: hidden;
+//   opacity: 1;
+// }
+// .page-enter, .page-leave-active {
+//   opacity: 0.5;
+//   transform: rotateY(100deg);
+// }
 .container
   position relative
   text-align center
