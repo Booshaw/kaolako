@@ -1,5 +1,5 @@
 <template>
-  <section class="container">
+  <section class="c-detail-container">
     <kaola-nav></kaola-nav>
     <div class="main">
       <div class="head-wrapper">
@@ -133,7 +133,7 @@ export default {
 }
 </script>
 <style lang="stylus">
-.container
+.c-detail-container
   margin-top 60px
   display flex
   flex-direction column
@@ -250,6 +250,7 @@ export default {
         .t-tips
           font-weight 700
           font-size 16px
+          padding 4px
         .teacher-intro
           padding 24px 0 20px
           img

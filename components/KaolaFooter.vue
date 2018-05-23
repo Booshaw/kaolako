@@ -1,5 +1,5 @@
 <template>
-  <div class="footer">
+  <div class="f-footer">
     <div class="container">
       <div class="footer-wrapper idx-width">
         <transition name="fade">
@@ -56,7 +56,7 @@ export default {
 <style lang="stylus">
   .router-link-active
     text-decoration: none
-  .footer
+  .f-footer
     height 80px
     padding 27px 0
     .container
