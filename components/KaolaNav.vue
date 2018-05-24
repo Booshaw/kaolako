@@ -141,8 +141,9 @@ export default {
           // border-bottom 1px solid #eeeeee
           border-bottom-1px #eeeeee
           padding 1rem
-        &.router-link-active
+        &.nuxt-link-exact-active, .nuxt-link-active
           color #61dfe1
+          // border-bottom: 2px solid #f01414
       .logo
         padding-left 90px
         padding-right 100px
