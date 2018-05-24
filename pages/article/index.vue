@@ -34,7 +34,7 @@
         <i-col :lg="18" :md="18" :sm="24" :xs="24">
           <div class="box">
             <article-list :articleList="articleList" @select="selectArticle"></article-list>
-            <div v-if="!pageShow" class="no-result">
+            <div v-if="!articleList.length" class="no-result">
               <p>哦豁,暂无数据</p>
             </div>
             <div class="pages-wrapper" v-if="pageShow">
