@@ -333,10 +333,11 @@ export default {
         .item
           display inline-block
           width 25%
+          transition .3s all linear          
           @media screen and (max-width:440px)
             width 50%
           &:hover
-            box-shadow 0 4px 8px 0 rgba(7, 17, 27, 0.1)
+            box-shadow 0 8px 16px 0 rgba(7,17,27,0.1)
             border-radius 8px
           .box
             margin 12px 12px 36px
@@ -361,7 +362,7 @@ export default {
                 height 64px
               .category-img
                 border-radius 12px
-                height 132px
+                height 130px
                 display block
                 width 100%
               .category-info

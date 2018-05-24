@@ -1,5 +1,5 @@
 <template>
-  <section class="c-container">
+  <section class="c-article-container">
     <div class="c-content">
       <div class="item" v-for="(item, index) in personalInfo.timeLineList" :key="index" >
         <div class="aricle-lwrap" v-if="item.type === 1">
@@ -62,7 +62,7 @@ export default {
 }
 </script>
 <style lang="stylus">
-.c-container
+.c-article-container
   position relative
   height 100%
   width 100%
