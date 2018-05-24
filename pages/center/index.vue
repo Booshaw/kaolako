@@ -1,5 +1,5 @@
 <template>
-  <section class="container">
+  <section class="center-container">
     <kaola-nav></kaola-nav>
     <div class="main">
       <div class="head-wrapper">
@@ -18,7 +18,7 @@
         <nuxt-child/>
       </div>
     </div>
-    <kaola-footer></kaola-footer>
+    <kaola-foo></kaola-foo>
   </section>
 </template>
 <script>
@@ -32,7 +32,7 @@ export default {
       current: 0,
       navList: [
         {
-          navTitle: "首页",
+          navTitle: "动态",
           path: "/center"
         },
         {
@@ -75,17 +75,17 @@ export default {
 }
 </script>
 <style lang="stylus">
-.page-enter-active, .page-leave-active {
-  transition: opacity .4s, transform .4s;
-  transform-style: preserve-3d;
-  backface-visibility: hidden;
-  opacity: 1;
-}
-.page-enter, .page-leave-active {
-  opacity: 0.5;
-  transform: rotateY(100deg);
-}
-.container
+// .page-enter-active, .page-leave-active {
+//   transition: opacity .4s, transform .4s;
+//   transform-style: preserve-3d;
+//   backface-visibility: hidden;
+//   opacity: 1;
+// }
+// .page-enter, .page-leave-active {
+//   opacity: 0.5;
+//   transform: rotateY(100deg);
+// }
+.center-container
   position relative
   text-align center
   margin-top 60px
