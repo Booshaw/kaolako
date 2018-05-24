@@ -39,8 +39,8 @@
       </div> -->
       <div class="content">
         <div class="content-wrapper">
-          <Row>
-            <i-col :lg="6" :md="6" :sm="12" :xs="12" v-for="(item, index) in courseList" :key="index">
+          <ul>
+            <li v-for="(item, index) in courseList" :key="index" class="item">
               <div class="box" @click="toCourseDetail(item)">
                 <div class="category-box">
                   <div class="category-gradient">
@@ -65,8 +65,8 @@
                   </div>
                 </div>
               </div>
-            </i-col>
-          </Row>
+            </li>
+          </ul>
         </div>
       </div>
       <div v-if="loading">
@@ -104,12 +104,12 @@ export default {
       courseCategoryList: [],
       search: '', // 搜索内容
       categoryList: [], // 分类列表
-      categoryCurrent: 2, // 选择的分类
+      categoryCurrent: 0, // 选择的分类
       moreCategoryIcon: false, // 更多分类icon
       moreCategory: false, // 更多分类显示
       tagList: [], // 标签分类
       moreTagIcon: false, // 更多标签icon
-      tagCurrent: 2, // 选择的标签
+      tagCurrent: 0, // 选择的标签
       moreTag: false // 更多标签显示
     }
   },
@@ -152,6 +152,7 @@ export default {
           this.courseList = res.data.data.pageData
           this.totalRecord = res.data.data.totalRecord
           this.loading = false
+          this.pageShow = true
         } else{
           this.noResult = true
         }
@@ -328,92 +329,101 @@ export default {
           white-space normal
           overflow hidden
           text-overflow ellipsis
-        .box
-          margin 8px
-          overflow hidden
+        .item
+          display inline-block
+          width 25%
+          @media screen and (max-width:440px)
+            width 50%
           &:hover
-            cursor pointer
-          .category-box
-            position relative
-            transition 0.3s all linear
-            height 130px
-            max-height 148px
-            background-color #eeeeee
-            border-radius 12px
-            .category-gradient
-              position absolute
-              z-index 0
-              background-image linear-gradient(-180deg, rgba(7, 17, 27, 0) 0%, rgba(7, 17, 27, 0.6) 97%)
+            box-shadow 4px 8px 8px 0 rgba(7,17,27,0.1)
+            border-radius 8px
+          .box
+            margin 8px
+            overflow hidden
+            &:hover
+              cursor pointer
+            .category-box
+              position relative
+              transition 0.3s all linear
+              height 130px
+              max-height 148px
+              background-color #eeeeee
               border-radius 12px
-              left 0
-              bottom 0
-              right 0
-              height 64px
-            .category-img
-              border-radius 12px
-              height 132px
-              width 100%
-            .category-info
-              position absolute
-              left 16px
-              right 16px
-              bottom 16px
-              height 36px
-              text-align left
-              img
-                width 36px
+              .category-gradient
+                position absolute
+                z-index 0
+                background-image linear-gradient(-180deg, rgba(7, 17, 27, 0) 0%, rgba(7, 17, 27, 0.6) 97%)
+                border-radius 12px
+                left 0
+                bottom 0
+                right 0
+                height 64px
+              .category-img
+                border-radius 12px
+                height 132px
+                display block
+                width 100%
+              .category-info
+                position absolute
+                left 16px
+                right 16px
+                bottom 16px
                 height 36px
-                border-radius 50%
-                margin-right 14px
-                margin-bottom -8px
-              span
-                padding-bottom 8px
-                font-size 14px
-                color #ffffff
-                line-height 18px
-                text-shadow 0 2px 4px rgba(7, 17, 27, 0.5)
+                text-align left
+                img
+                  width 36px
+                  height 36px
+                  border-radius 50%
+                  margin-right 14px
+                  margin-bottom -8px
+                span
+                  padding-bottom 8px
+                  font-size 14px
+                  color #ffffff
+                  line-height 18px
+                  text-shadow 0 2px 4px rgba(7, 17, 27, 0.5)
+                  font-weight 700
+            .categor-intro-box
+              position relative
+              padding 0 12px
+              min-height 112px
+              .course-title
+                font-size 16px
+                line-height 24px
                 font-weight 700
-          .categor-intro-box
-            position relative
-            padding 0 12px
-            min-height 112px
-            .course-title
-              font-size 16px
-              line-height 24px
-              font-weight 700
-              max-height 48px
-              margin-top 16px
-              transition 0.3s all linear
-              word-break break-all
-              word-wrap break-word
-              overflow hidden
-              display -webkit-box
-              -webkit-line-clamp 2
-              -webkit-box-orient vertical
-              color #2b333b
-              text-align left
-            .evaluation-box
-              font-size 14px
-              text-align left
-              padding 12px 0
-              span
-                padding 0 8px
+                max-height 48px
+                margin-top 16px
+                transition 0.3s all linear
+                word-break break-all
+                word-wrap break-word
+                overflow hidden
+                display -webkit-box
+                -webkit-line-clamp 2
+                -webkit-box-orient vertical
+                color #2b333b
+                text-align left
+              .evaluation-box
+                font-size 14px
+                text-align left
+                padding 12px 0
+                span
+                  padding 0 8px
+                  color #93999f
+              .desc
+                margin-top 4px
+                font-size 12px
                 color #93999f
-            .desc
-              margin-top 4px
-              font-size 12px
-              color #93999f
-              max-height 48px
-              line-height 24px
-              word-break break-all
-              word-wrap break-word
-              overflow hidden
-              transition 0.3s all linear
-              text-overflow -o-ellipsis-lastline
-              display -webkit-box
-              -webkit-line-clamp 2
-              -webkit-box-orient vertical
-              text-align left
+                max-height 48px
+                line-height 24px
+                word-break break-all
+                word-wrap break-word
+                overflow hidden
+                transition 0.3s all linear
+                text-overflow -o-ellipsis-lastline
+                display -webkit-box
+                -webkit-line-clamp 2
+                -webkit-box-orient vertical
+                text-align left
     .no-result
       text-align center
       padding 25% 0
