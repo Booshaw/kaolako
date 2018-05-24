@@ -51,13 +51,14 @@
           <i-col :lg="6" :md="6" :sm="24" :xs="24">
             <div class="note-wrapper">
               <h4 class="t-tips">讲师提示</h4>
-              <!-- <div class="teacher-intro">
-                <img :src="section.teacherInfo.avatar" :alt="section.teacherInfo.name">
-                <span class="t-name">{{section.teacherInfo.name}}</span>
+              <div class="teacher-intro" v-for="(item, index) in section.teacherInfo" :key="index">
+                <img :src="item.avatar" :alt="item.realName">
+                <span class="t-name">{{item.realName}}</span>
               </div>
+              <h4 class="t-tips">课程须知</h4>              
               <div class="course-info-tip">
-                <p>{{section.courseNotes.notes}}</p>
-              </div> -->
+                <p>{{section.courseNotes}}</p>
+              </div>
             </div>
           </i-col>
         </Row>
