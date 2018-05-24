@@ -56,7 +56,7 @@ import Service from '~/plugins/axios'
           sources: [
             // {
             //   type: 'video/mp4',
-            //   src: 'http://1256488328.vod2.myqcloud.com/153f9c6evodgzp1256488328/36d06aab7447398156195013724/3apDn9gajpMA.mp4'
+            //   src: 'http://vjs.zencdn.net/v/oceans.mp4'
             // }
           ], // 播放视频资源
           // poster: "./static/videoBG.jpeg",
@@ -164,17 +164,23 @@ import Service from '~/plugins/axios'
 
 <style lang="stylus">
   .s-container
+    position relative
     width 100%
     display flex
     flex-direction column
     .s-header
+      position absolute
       width 100%
       background-color #14191e
       text-align left
+      z-index 999
+      opacity 0.2
+      &:hover
+        opacity 1
       .box
         width 80%
         margin 0 auto
-        padding 16px
+        padding 0 16px
         font-size 12px
         color #ffffff
         overflow hidden
@@ -194,11 +200,11 @@ import Service from '~/plugins/axios'
             font-size 12px
         .next-bt
           color #ffffff
-          margin 0 0 0 100px
+          margin 0 0 0 50px
     .main
       flex 1
-      .video-player-box 
-        height 90%
+      .video-player-box
+        position relative
       .video-js .vjs-big-play-button
         position absolute
         top 50%
