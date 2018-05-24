@@ -37,7 +37,7 @@
             <div v-if="!articleList.length" class="no-result">
               <p>哦豁,暂无数据</p>
             </div>
-            <div class="pages-wrapper" v-if="pageShow">
+            <div class="pages-wrapper" v-if="pageShow && articleList.length">
               <Page :total="totalRecord" size="small" transfer show-elevator show-sizer @on-change="pageNum" @on-page-size-change="pageSizeNum"></Page>
             </div>
             <div v-if="loading">
@@ -123,8 +123,9 @@ export default {
           // this.tagList = res.data.data.tagList
           // this.categoryList = res.data.data.categoryList
           this.pop = res.data.data.pageData.slice(0, 10)
-          this.totalRecord = res.data.data.totalRecord  
-          this.loading = false        
+          this.totalRecord = res.data.data.totalRecord
+          this.loading = false
+          this.pageShow = true  
           // this.courseCategoryList = res.data.data.courseCategoryList
         } else {
           this.noResult = true
@@ -291,6 +292,7 @@ export default {
       .no-result
         text-align center
         padding 25% 0
+        color #c3cbd6
       .pages-wrapper
         margin-top 32px
         text-align center

@@ -427,6 +427,7 @@ export default {
     .no-result
       text-align center
       padding 25% 0
+      color #c3cbd6      
   .footer
     flex 0 0 auto
   .ivu-rate
