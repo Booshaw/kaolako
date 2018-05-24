@@ -128,6 +128,7 @@ export default {
           this.pageShow = true  
           // this.courseCategoryList = res.data.data.courseCategoryList
         } else {
+          this.loading = false
           this.noResult = true
         }
       })

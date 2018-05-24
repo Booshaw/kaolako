@@ -45,6 +45,15 @@
         </div>
       </i-col>
     </row>
+    <div v-if="!article.length" class="no-result">
+        <p>哦豁,你要的文章飞走了</p>
+      </div>
+    <div v-if="loading">
+      <Spin fix>
+        <Icon type="load-c" size=18 class="icon-load"></Icon>
+        <div>Loading</div>
+      </Spin>
+    </div>
     <kaola-foo></kaola-foo>
   </div>
 </template>
@@ -59,7 +68,9 @@ export default {
     return {
       article: {},
       showAdv: true,
-      pop: []
+      pop: [],
+      loading: false,
+      noResult:  false
     }
   },
   created() {
@@ -69,6 +80,7 @@ export default {
   },
   methods: {
     _getArticle() {
+      this.loading = true
     return Service.post(`http://api.kaolako.com/kaola/web/article/get`,{
       id: this.$route.query.id
     })
@@ -77,6 +89,10 @@ export default {
         this.article = res.data.data
         // this.pop = res.data.data
         this.pageShow = true
+        this.loading = false
+      } else {
+        this.loading = false
+        this.noResult = true
       }
     })
     },
@@ -218,4 +234,8 @@ export default {
         color #b5b9bc
         font-size 0.625rem
         line-height 1rem
+  .no-result
+    text-align center
+    padding 25% 0
+    color #c3cbd6
 </style>

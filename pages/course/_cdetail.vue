@@ -63,6 +63,12 @@
           </i-col>
         </Row>
       </div>
+      <div v-if="loading">
+        <Spin fix>
+          <Icon type="load-c" size=18 class="icon-load"></Icon>
+          <div>Loading</div>
+        </Spin>
+      </div>
     </div>
     <kaola-foo></kaola-foo>
   </section>
@@ -77,7 +83,8 @@ export default {
     return {
       valueItem: [],
       section: {},
-      sectionListLength: 0
+      sectionListLength: 0,
+      loading: false
     }
   },
   // asyncData ({query}) {
@@ -90,6 +97,7 @@ export default {
   // },
   methods: {
     _getCourseDetail() {
+      this.loading = true
       return Service.post(
         `http://api.kaolako.com/kaola/web/course/detail`,
         {
@@ -99,8 +107,8 @@ export default {
         if (res.data.code === '200') {
           this.section = res.data.data
           this.sectionListLength = res.data.data.sectionList.length
+          this.loading = false
         }
-        console.log(this.sectionListLength)
       })
     },
     _initValue() {
@@ -244,8 +252,9 @@ export default {
           margin 0 auto
           width 100%
       .note-wrapper
-        margin-bottom 28px
-        padding 0 24px 24px
+        // width 220px
+        margin 28px auto
+        padding 0 14px 14px
         border-bottom 1px solid #d9dde1
         text-align left
         .t-tips
