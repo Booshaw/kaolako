@@ -46,9 +46,18 @@
           </Row>
         </div>
       </div>
+      <div v-if="loading">
+        <Spin fix>
+          <Icon type="load-c" size=18 class="icon-load"></Icon>
+          <div>Loading</div>
+        </Spin>
+      </div>
+      <div v-if="!teacherList.length" class="no-result">
+        <p>哦豁,暂无数据</p>
+      </div>
       <!--pageNav-->
-      <div class="pages-wrapper" v-if="pageShow">
-        <Page :total="totalRecord" size="small" transfer show-elevator show-sizer @on-change="pageNum" @on-page-size-change="pageSizeNum"></Page>
+      <div class="pages-wrapper" v-if="pageShow && teacherList.length">
+        <Page :total="totalRecord" size="small" transfer @on-change="pageNum" @on-page-size-change="pageSizeNum"></Page>
       </div>
     </div>
     <kaola-foo class="footer"></kaola-foo>
@@ -59,16 +68,18 @@ import KaolaNav from '~/components/KaolaNav.vue'
 import KaolaFoo from '~/components/KaolaFoo.vue'
 import Service from '~/plugins/axios'
 export default {
-  data () {
+  data() {
     return {
       search: '',
+      loading: false,
+      noResult: false,
       totalRecord: 100,
-      pageShow: false,
+      pageShow: true,
       page: 1,
       pageSize: 12,
       teacherList: [],
       category: [], // 师资分类列表
-      categoryCurrent: 0, // 默认分类
+      categoryCurrent: 0 // 默认分类
     }
   },
   // asyncData() {
@@ -86,27 +97,29 @@ export default {
   },
   methods: {
     _getCategory() {
-      return Service.post(`http://api.kaolako.com/kaola/common/dict/get`,
-      {
+      return Service.post(`http://api.kaolako.com/kaola/common/dict/get`, {
         dictType: ['courseCategory']
-      })
-      .then((res) => {
-        console.log(res)        
+      }).then(res => {
+        console.log(res)
         if (res.data.code === '200') {
           this.category = res.data.data.courseCategory
         }
       })
     },
     _getTeacherList() {
-      return Service.post(`http://api.kaolako.com/kaola/web/teacher/list`,{
-        id: this.categoryCurrent
-      })
-      .then((res) => {
+      this.noResult = false
+      this.loading = true
+      return Service.post(`http://api.kaolako.com/kaola/web/teacher/list`, {
+        category: this.categoryCurrent
+      }).then(res => {
         // console.log(res)
         if (res.data.code === '200') {
           this.teacherList = res.data.data.pageData
-          this.pageShow = true
-          // this.courseCategoryList = res.data.data.courseCategoryList
+          // this.pageShow = true
+          this.loading = false
+        } else {
+          this.pageShow = false
+          this.noResult = true
         }
       })
     },
@@ -117,17 +130,18 @@ export default {
     toTeacherInfo(t) {
       this.$router.push({
         path: '/teacher/detail',
-        query: { id: t.id}
+        query: { id: t.id }
       })
     },
-    pageNum(page) { // 分页插件获取点击page页码
+    pageNum(page) {
+      // 分页插件获取点击page页码
       this.page = page
       this._getCourseList()
     },
     pageSizeNum(size) {
       this.pageSize = size
       this._getCourseList()
-    },
+    }
   },
   components: {
     // AppLogo,
@@ -148,18 +162,18 @@ export default {
     margin-top 60px
     flex 1 0 auto
     // .c-category
-    //   width 80%
-    //   margin 32px auto 16px
-    //   text-align left
-    //   @media screen and (max-width: 440px)
-    //     width 100%
-    //     padding 16px
-    //   .item-box
-    //     padding-left 16px
-    //     li
-    //       display inline-block
-    //       margin 8px
-    //       font-size 12px
+    // width 80%
+    // margin 32px auto 16px
+    // text-align left
+    // @media screen and (max-width: 440px)
+    // width 100%
+    // padding 16px
+    // .item-box
+    // padding-left 16px
+    // li
+    // display inline-block
+    // margin 8px
+    // font-size 12px
     .c-category-box
       // height 132px
       background url('/static/sz-header-bk.png') center center no-repeat
@@ -251,6 +265,8 @@ export default {
     .teacher
       width 80%
       margin 0 auto
+      @media screen and (max-width: 440px)
+        width 100%
       .teacher-wrapper
         margin 0 auto
         padding 16px
@@ -266,8 +282,8 @@ export default {
         .teacher-intro
           position relative
           margin 32px 4px
-          background rgba(255,255,255,0.8)
-          box-shadow 0 4px 8px 0 rgba(7,17,27,0.5)
+          background rgba(255, 255, 255, 0.8)
+          box-shadow 0 4px 8px 0 rgba(7, 17, 27, 0.5)
           border-radius 6px
           height 256px
           padding 8px
@@ -324,6 +340,9 @@ export default {
             text-align justify
             padding 0 16px
             overflow hidden
+    .no-result
+      text-align center
+      padding 25% 0
   .footer
     flex 0 0 auto
   .ivu-rate
