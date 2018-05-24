@@ -322,6 +322,7 @@ export default {
         padding 16px
       .content-wrapper
         margin 32px 0
+        text-align left
         .style-title
           font-size 20px
           text-align left
@@ -335,10 +336,10 @@ export default {
           @media screen and (max-width:440px)
             width 50%
           &:hover
-            box-shadow 4px 8px 8px 0 rgba(7,17,27,0.1)
+            box-shadow 0 4px 8px 0 rgba(7, 17, 27, 0.1)
             border-radius 8px
           .box
-            margin 8px
+            margin 12px 12px 36px
             overflow hidden
             &:hover
               cursor pointer
@@ -378,11 +379,10 @@ export default {
                   margin-bottom -8px
                 span
                   padding-bottom 8px
-                  font-size 14px
+                  font-size 12px
                   color #ffffff
                   line-height 18px
                   text-shadow 0 2px 4px rgba(7, 17, 27, 0.5)
-                  font-weight 700
             .categor-intro-box
               position relative
               padding 0 12px
