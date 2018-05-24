@@ -164,7 +164,7 @@ export default {
         width 100%
         padding 16px
       .content-wrapper
-        margin 32px 0
+        margin 32px auto
         .style-title
           font-size 20px
           text-align left
