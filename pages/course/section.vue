@@ -55,8 +55,8 @@ import Service from '~/plugins/axios'
           playbackRates: [0.7, 1.0, 1.5, 2.0],
           sources: [
             // {
-            //   type: 'video/mp4',
-            //   src: 'http://vjs.zencdn.net/v/oceans.mp4'
+            //   // type: 'video/mp4',
+            //   src: 'http://1256488328.vod2.myqcloud.com/153f9c6evodgzp1256488328/36d06aab7447398156195013724/3apDn9gajpMA.mp4'
             // }
           ], // 播放视频资源
           // poster: "./static/videoBG.jpeg",

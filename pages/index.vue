@@ -44,13 +44,13 @@
             <i-col :lg="12" :md="12" :sm="24" :xs="24">
               <h2 class="type">热门手记</h2>
               <ul class="article-box">
-                <li v-for="(i,index2) in article.most" :key="index2" class="item"> <span class="tag">{{i.tag}}</span> <span class="title">{{i.title}}</span> </li>
+                <li v-for="(i,index2) in article.most" :key="index2" class="item" @click="selectArticle(i)"> <span class="tag">{{i.tag}}</span> <span class="title">{{i.title}}</span> </li>
               </ul>
             </i-col>
             <i-col :lg="12" :md="12" :sm="24" :xs="24">
               <h2 class="type">最新手记</h2>
                <ul class="article-box">
-                <li v-for="(j,index3) in article.latest" :key="index3" class="item"> <span class="tag">{{j.tag}}</span> <span class="title">{{j.title}}</span> </li>
+                <li v-for="(i,index3) in article.latest" :key="index3" class="item" @click="selectArticle(i)"> <span class="tag">{{i.tag}}</span> <span class="title">{{i.title}}</span> </li>
               </ul>
             </i-col>
           </Row>
@@ -61,7 +61,7 @@
           <h3 class="title">考拉精英名师</h3>
           <Row>
             <i-col :lg="4" :md="8" :sm="12" :xs="12" v-for="(t, index4) in teacherList" :key="index4">
-              <div class="teacher-intro">
+              <div class="teacher-intro" @click="toTeacherInfo(t)">
                 <img :src="t.avatar" :alt="t.speciality" class="avatar">
                 <h2 class="name">{{t.name}}</h2>
                 <h3 class="spec">{{t.speciality}}</h3>
@@ -98,9 +98,9 @@ export default {
   },
 
   asyncData () {
-    return Service.get(`https://easy-mock.com/mock/5ac20177470d657aa5c1dd51/kaolako/homePage`)
+    return Service.get(`http://api.kaolako.com/kaola/web/home`)
     .then((res) => {
-      // console.log(res.data.data)
+      console.log(res.data.data)
       return { 
         bannerList: res.data.data.bannerList,
         courseList: res.data.data.courseList,
@@ -115,7 +115,19 @@ export default {
         path: '/course/courseDetail',
         query: { id: i.id }
       })
-    }
+    },
+    selectArticle(item) {
+      this.$router.push({
+        path: `/article/detail`,
+        query: { id: item.id }
+      })
+    },
+    toTeacherInfo(t) {
+      this.$router.push({
+        path: '/teacher/detail',
+        query: { id: t.id }
+      })
+    },
   },
 
 
@@ -306,6 +318,8 @@ export default {
       .teacher-wrapper
         margin 0 auto
         padding 16px
+        &:hover
+          cursor pointer
         .title
           position relative
           margin 16px

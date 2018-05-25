@@ -91,8 +91,14 @@
           </div>
         </i-col>
       </Row>
+      <div v-if="loading">
+        <Spin fix>
+          <Icon type="load-c" size=18 class="icon-load"></Icon>
+          <div>Loading</div>
+        </Spin>
+      </div>
     </div>
-    <kaola-footer></kaola-footer>
+    <kaola-foo></kaola-foo>
   </section>
 </template>
 <script>
@@ -105,7 +111,8 @@ export default {
     return {
       noResult: false, // 未查询到数据
       current: 0,
-      teacherInfo: {}
+      teacherInfo: {},
+      loading: false
     }
   },
   created() {
@@ -113,10 +120,12 @@ export default {
   },
   methods: {
     _getList() {
+      this.loading = true
       return Service.get(`https://easy-mock.com/mock/5ac20177470d657aa5c1dd51/kaolako/homePage`)
       .then((res) => {
         if (res.data.code === 200) {
         this.teacherInfo = res.data.data.teacherInfo
+        this.loading = false
       }
       })
     }

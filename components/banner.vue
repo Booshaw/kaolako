@@ -2,7 +2,7 @@
    <div class="j-slider-wrapper">
       <Carousel autoplay v-model="sliderStart" loop>
         <CarouselItem v-for="(item, index) in banner" :key="index" >
-           <img class="img-responsive" :src="item.img" alt="">
+           <img class="img-responsive" :src="item.image" alt="">
         </CarouselItem>
     </Carousel>
    </div>
