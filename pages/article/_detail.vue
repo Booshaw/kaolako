@@ -31,28 +31,30 @@
         </i-col>
       </row>
     </div>
-    <row class="detail-content" type="flex" justify="space-between">
-      <i-col :lg="18" :md="18" :sm="24">
-        <div class="content-wrapper" v-html="article.content">
-        </div>
-      </i-col>
-      <i-col :lg="6" :md="6" :sm="6" :xs="0">
-        <div class="adv" >
-          <div v-if="pop && pop.length">
-            <h2 class="text">精选推荐</h2>
-          <pop-list :popList="pop" @select="selectPop"></pop-list>
+    <div class="detail-content">
+      <row>
+        <i-col :lg="18" :md="18" :sm="24">
+          <div class="content-wrapper" v-html="article.content">
           </div>
+              <div v-if="!article.length" class="no-result">
+          <p>哦豁,你要的文章飞走了</p>
         </div>
-      </i-col>
-    </row>
-    <div v-if="!article.length" class="no-result">
-        <p>哦豁,你要的文章飞走了</p>
-      </div>
-    <div v-if="loading">
-      <Spin fix>
-        <Icon type="load-c" size=18 class="icon-load"></Icon>
-        <div>Loading</div>
-      </Spin>
+        <div v-if="loading">
+          <Spin fix>
+            <Icon type="load-c" size=18 class="icon-load"></Icon>
+            <div>Loading</div>
+          </Spin>
+        </div>
+        </i-col>
+        <i-col :lg="6" :md="6" :sm="6" :xs="0">
+          <div class="adv" >
+            <div v-if="pop && pop.length">
+              <h2 class="text">精选推荐</h2>
+            <pop-list :popList="pop" @select="selectPop"></pop-list>
+            </div>
+          </div>
+        </i-col>
+      </row>
     </div>
     <kaola-foo></kaola-foo>
   </div>
@@ -70,7 +72,7 @@ export default {
       showAdv: true,
       pop: [],
       loading: false,
-      noResult:  false
+      noResult: false
     }
   },
   created() {
@@ -81,20 +83,19 @@ export default {
   methods: {
     _getArticle() {
       this.loading = true
-    return Service.post(`http://api.kaolako.com/kaola/web/article/get`,{
-      id: this.$route.query.id
-    })
-    .then((res) => {
-      if (res.data.code === '200') {
-        this.article = res.data.data
-        // this.pop = res.data.data
-        this.pageShow = true
-        this.loading = false
-      } else {
-        this.loading = false
-        this.noResult = true
-      }
-    })
+      return Service.post(`http://api.kaolako.com/kaola/web/article/get`, {
+        id: this.$route.query.id
+      }).then(res => {
+        if (res.data.code === '200') {
+          this.article = res.data.data
+          // this.pop = res.data.data
+          this.pageShow = true
+          this.loading = false
+        } else {
+          this.loading = false
+          this.noResult = true
+        }
+      })
     },
     _getPop() {
       return Service.post(`http://api.kaolako.com/kaola/web/article/list`).then(
@@ -104,7 +105,7 @@ export default {
             // this.articleList = res.data.data.pageData
             // this.tagList = res.data.data.tagList
             // this.categoryList = res.data.data.categoryList
-            this.pop = res.data.data.pageData.slice(0,10)
+            this.pop = res.data.data.pageData.slice(0, 10)
             // this.courseCategoryList = res.data.data.courseCategoryList
             this.pageShow = true
           }
@@ -193,7 +194,6 @@ export default {
       line-height 5rem
   .detail-content
     .content-wrapper
-      width 80%
       margin 2rem auto
       text-indent 2em
       font-size 0.875rem

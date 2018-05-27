@@ -7,58 +7,59 @@
           <img :src="teacherInfo.avatar" :alt="teacherInfo.nickName">
           <span class="nick-name">{{teacherInfo.nickName}}</span>
           <span class="gender" :class="{female: teacherInfo.gender === '女'}"><Icon type="female" v-if="teacherInfo.gender === '女'"></Icon><Icon type="male" v-else></Icon></span>
+          <span>{{teacherInfo.introduction}}</span>
         </div>
       </div>
       <Row class="content-wrapper">
         <i-col :lg="18" :md="18" :sm="24" :xs="24">
           <div class="c-content">
-            <div class="item" v-for="(item, index) in teacherInfo.timeLineList" :key="index" >
-              <div class="aricle-lwrap" v-if="item.type === 1">
-                <h3 class="item-title" @click="selectItem(item)">{{item.title}}</h3>
+            <div class="item" v-for="(i, index1) in teacherInfo.timeLineList" :key="index1" >
+              <div class="aricle-lwrap" v-if="i.type === 1">
+                <h3 class="item-title" @click="selectItem(i)">{{i.title}}</h3>
                 <!--text-->
                 <div class="item-digest-wrapper">
-                  <div class="img-link" v-if="item.image" @click="selectItem(item)">
-                    <img :src="item.image" alt="考拉课">
+                  <div class="img-link" @click="selectItem(i)">
+                    <img :src="i.thumbnailUrl" :alt="i.title">
                   </div>
                   <p class="item-digest">
-                    {{item.summary}}
+                    {{i.summary}}
                   </p>
                 </div>
                 <div class="item-btm">
                   <ul class="l">
-                    <li class="hd-pic">{{item.author}}</li>
-                    <li class="pass-time">{{item.publishTime}}</li>
-                    <li class="count">{{item.viewCount}}浏览</li>
-                    <li class="count">{{item.categoryName}}</li>
-                    <li class="count" v-for="(i, index1) in item.tag" :key="index1">{{i.name}}</li>
+                    <li class="hd-pic">{{i.author}}</li>
+                    <li class="pass-time">{{i.publishTime}}</li>
+                    <li class="count">{{i.viewCount}}浏览</li>
+                    <li class="count">{{i.categoryName}}</li>
+                    <li class="count" v-for="(n, index2) in i.tag" :key="index2">{{n.name}}</li>
                   </ul>
                 </div>
-                <span class="time">{{item.createdTime}}</span>
+                <span class="time">{{i.createdTime}}</span>
               </div>
-              <div class="box" @click="toCourseDetail(item)" v-else>
+              <div class="box" @click="toCourseDetail(i)" v-else>
                 <div class="category-box">
                   <div class="category-gradient">
                   </div>
-                  <img class="category-img" :src="item.img" :alt="item.title">
+                  <img class="category-img" :src="i.img" :alt="i.title">
                   <div class="category-info">
-                    <img :src="item.avatar" :alt="item.avatar">
-                    <span>{{item.author}}</span>
+                    <img :src="i.avatar" :alt="i.avatar">
+                    <span>{{i.author}}</span>
                   </div>
                 </div>
                 <div class="categor-intro-box">
-                  <p class="course-title">{{item.title}}</p>
+                  <p class="course-title">{{i.title}}</p>
                   <div class="evaluation-box">
                     <Icon type="ios-person-outline"></Icon>
-                    <span>{{item.count}}</span>
-                    <Rate show-text disabled v-model="item.rate">
-                      <span style="color: #f5a623">{{item.rate}}</span>
+                    <span>{{i.count}}</span>
+                    <Rate show-text disabled v-model="i.rate">
+                      <span style="color: #f5a623">{{i.rate}}</span>
                     </Rate>
                   </div>
                   <div class="desc">
-                    <p>{{item.description}}</p>
+                    <p>{{i.description}}</p>
                   </div>
                 </div>
-                <span class="time">{{item.createdTime}}</span>
+                <span class="time">{{i.createdTime}}</span>
               </div>
             </div>
           </div>
@@ -69,9 +70,9 @@
         <i-col :lg="6" :md="6" :sm="24" :xs="24">
           <div class="order-box" v-for="(item, index) in teacherInfo.order" :key="index">
             <ul>
-              <li>
+              <!-- <li>
                 <Icon type="person"></Icon> <span>{{item.teacher}}</span>
-              </li>
+              </li> -->
               <li>
                 <Icon type="pie-graph"></Icon> <span>{{item.category}}</span>
               </li>
@@ -107,12 +108,14 @@ import KaolaNav from '~/components/KaolaNav.vue'
 import KaolaFoo from '~/components/KaolaFoo.vue'
 import Service from '~/plugins/axios'
 export default {
-  data () {
+  data() {
     return {
       noResult: false, // 未查询到数据
       current: 0,
       teacherInfo: {},
-      loading: false
+      loading: false,
+      page: 1,
+      pageSize: 10
     }
   },
   created() {
@@ -121,12 +124,29 @@ export default {
   methods: {
     _getList() {
       this.loading = true
-      return Service.get(`https://easy-mock.com/mock/5ac20177470d657aa5c1dd51/kaolako/homePage`)
-      .then((res) => {
-        if (res.data.code === 200) {
-        this.teacherInfo = res.data.data.teacherInfo
-        this.loading = false
-      }
+      return Service.post(`http://api.kaolako.com/kaola/web/teacher/detail`, {
+        page: this.page,
+        pageSize: this.pageSize,
+        id: this.$route.query.id
+      }).then(res => {
+        if (res.data.code === '200') {
+          console.log(res.data.data)
+          this.teacherInfo = res.data.data
+          console.log(this.teacherInfo)
+          this.loading = false
+        }
+      })
+    },
+    selectItem(item) {
+      this.$router.push({
+        path: `/article/detail`,
+        query: { id: item.id }
+      })
+    },
+    toCourseDetail(item) {
+      this.$router.push({
+        path: '/course/courseDetail',
+        query: { id: item.id }
       })
     }
   },
@@ -137,15 +157,16 @@ export default {
 }
 </script>
 <style lang="stylus">
+@import '~assets/stylus/mixin'
 // .page-enter-active, .page-leave-active {
-//   transition: opacity .4s, transform .4s;
-//   transform-style: preserve-3d;
-//   backface-visibility: hidden;
-//   opacity: 1;
+// transition: opacity .4s, transform .4s;
+// transform-style: preserve-3d;
+// backface-visibility: hidden;
+// opacity: 1;
 // }
 // .page-enter, .page-leave-active {
-//   opacity: 0.5;
-//   transform: rotateY(100deg);
+// opacity: 0.5;
+// transform: rotateY(100deg);
 // }
 .container
   position relative
@@ -265,17 +286,17 @@ export default {
                 line-height 2rem
                 color #787d82
                 margin-top -5px
-                no-wrap(4,2rem)
+                no-wrap(4, 2rem)
                 @media screen and (max-device-width: 420px)
                   line-height 1.5rem
-                  no-wrap(4,1.5rem)  
+                  no-wrap(4, 1.5rem)
             .item-btm
               font-size 14px
               color #93999f
               line-height 18px
               padding 16px 0 18px
               @media screen and (max-width: 440px)
-                font-size 12px 
+                font-size 12px
               .l
                 text-align left
                 .hd-pic
@@ -296,7 +317,7 @@ export default {
               cursor pointer
             .category-box
               position relative
-              transition .3s all linear
+              transition 0.3s all linear
               height 130px
               max-height 148px
               background-color #eeeeee
@@ -305,7 +326,7 @@ export default {
               .category-gradient
                 position absolute
                 z-index 0
-                background-image linear-gradient(-180deg, rgba(7,17,27,0) 0%, rgba(7,17,27,0.6) 97%)
+                background-image linear-gradient(-180deg, rgba(7, 17, 27, 0) 0%, rgba(7, 17, 27, 0.6) 97%)
                 border-radius 12px
                 left 0
                 bottom 0
@@ -332,7 +353,7 @@ export default {
                   font-size 14px
                   color #ffffff
                   line-height 18px
-                  text-shadow 0 2px 4px rgba(7,17,27,0.5)
+                  text-shadow 0 2px 4px rgba(7, 17, 27, 0.5)
                   font-weight 700
             .categor-intro-box
               position relative
@@ -369,7 +390,7 @@ export default {
                 word-break break-all
                 word-wrap break-word
                 overflow hidden
-                transition .3s all linear
+                transition 0.3s all linear
                 text-overflow -o-ellipsis-lastline
                 display -webkit-box
                 -webkit-line-clamp 2
