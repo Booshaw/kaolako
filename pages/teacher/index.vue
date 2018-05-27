@@ -151,6 +151,7 @@ export default {
 }
 </script>
 <style lang="stylus">
+@import '~assets/stylus/mixin'
 .t-wrapper
   position relative
   height 100%
