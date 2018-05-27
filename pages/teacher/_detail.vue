@@ -13,7 +13,7 @@
       <Row class="content-wrapper">
         <i-col :lg="18" :md="18" :sm="24" :xs="24">
           <div class="c-content">
-            <div class="item" v-for="(i, index1) in teacherInfo.timeLineList" :key="index1" >
+            <div class="item" v-for="(i, index1) in timeLineList" :key="index1" >
               <div class="aricle-lwrap" v-if="i.type === 1">
                 <h3 class="item-title" @click="selectItem(i)">{{i.title}}</h3>
                 <!--text-->
@@ -50,7 +50,7 @@
                   <p class="course-title">{{i.title}}</p>
                   <div class="evaluation-box">
                     <Icon type="ios-person-outline"></Icon>
-                    <span>{{i.count}}</span>
+                    <span>{{i.viewCount}}</span>
                     <Rate show-text disabled v-model="i.rate">
                       <span style="color: #f5a623">{{i.rate}}</span>
                     </Rate>
@@ -63,9 +63,19 @@
               </div>
             </div>
           </div>
-          <div class="no-result" v-if="noResult">
-            <p>暂无任何动态</p>
-          </div>
+          <div v-if="loading">
+        <Spin fix>
+          <Icon type="load-c" size=18 class="icon-load"></Icon>
+          <div>Loading</div>
+        </Spin>
+      </div>
+      <div v-if="!timeLineList" class="no-result">
+        <p>哦豁,暂无数据</p>
+      </div>
+      <!--pageNav-->
+      <div class="pages-wrapper" v-if="pageShow">
+        <Page :total="totalRecord" size="small"  @on-change="pageNum" @on-page-size-change="pageSizeNum"></Page>
+      </div>
         </i-col>
         <i-col :lg="6" :md="6" :sm="24" :xs="24">
           <div class="order-box" v-for="(item, index) in teacherInfo.order" :key="index">
@@ -92,12 +102,6 @@
           </div>
         </i-col>
       </Row>
-      <div v-if="loading">
-        <Spin fix>
-          <Icon type="load-c" size=18 class="icon-load"></Icon>
-          <div>Loading</div>
-        </Spin>
-      </div>
     </div>
     <kaola-foo></kaola-foo>
   </section>
@@ -115,7 +119,10 @@ export default {
       teacherInfo: {},
       loading: false,
       page: 1,
-      pageSize: 10
+      pageSize: 10,
+      pageShow: true,
+      timeLineList: [],
+      totalRecord: 0
     }
   },
   created() {
@@ -130,9 +137,8 @@ export default {
         id: this.$route.query.id
       }).then(res => {
         if (res.data.code === '200') {
-          console.log(res.data.data)
           this.teacherInfo = res.data.data
-          console.log(this.teacherInfo)
+          this.timeLineList = res.data.data.timeLineList
           this.loading = false
         }
       })
@@ -148,7 +154,16 @@ export default {
         path: '/course/courseDetail',
         query: { id: item.id }
       })
-    }
+    },
+       pageNum(page) {
+      // 分页插件获取点击page页码
+      this.page = page
+      this._getList()
+    },
+    pageSizeNum(size) {
+      this.pageSize = size
+      this._getList()
+    },
   },
   components: {
     KaolaNav,
