@@ -36,15 +36,15 @@
         <i-col :lg="18" :md="18" :sm="24">
           <div class="content-wrapper" v-html="article.content">
           </div>
-              <div v-if="!article.length" class="no-result">
-          <p>哦豁,你要的文章飞走了</p>
-        </div>
-        <div v-if="loading">
-          <Spin fix>
-            <Icon type="load-c" size=18 class="icon-load"></Icon>
-            <div>Loading</div>
-          </Spin>
-        </div>
+          <div v-if="!article.content" class="no-result">
+            <p>哦豁,你要的文章飞走了</p>
+          </div>
+          <div v-if="loading">
+            <Spin fix>
+              <Icon type="load-c" size=18 class="icon-load"></Icon>
+              <div>Loading</div>
+            </Spin>
+          </div>
         </i-col>
         <i-col :lg="6" :md="6" :sm="6" :xs="0">
           <div class="adv" >
@@ -193,8 +193,11 @@ export default {
     .head-adv
       line-height 5rem
   .detail-content
+    width 80%
+    margin 0 auto
     .content-wrapper
       margin 2rem auto
+      padding 32px
       text-indent 2em
       font-size 0.875rem
       letter-spacing 1.5px
