@@ -21,7 +21,7 @@
           </div>
         </i-col>
         <i-col :lg="6" :md="6" :sm="0">
-          <div class="head-adv">考拉课</div>
+          <div class="head-adv">尚课</div>
         </i-col>
       </row>
     </div>

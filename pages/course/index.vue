@@ -15,7 +15,7 @@
       <div class="c-category-box">
         <Row>
           <i-col :lg="10" :md="10" :xs="0" offset="2">
-            <h1 class="title"> <span class="icon"><Icon type="ios-flower"></Icon></span> 考拉课堂 <span class="slogn">轻松考试<Icon type="link"></Icon>为梦想加油</span>  </h1>
+            <h1 class="title"> <span class="icon"><Icon type="ios-flower"></Icon></span> 尚课堂 <span class="slogn">轻松考试<Icon type="link"></Icon>为梦想加油</span>  </h1>
           </i-col>
           <i-col :lg="12" :md="12" :xs="24">
             <div class="search-box">

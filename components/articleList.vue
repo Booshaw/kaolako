@@ -5,7 +5,7 @@
       <!--text-->
       <div class="item-digest-wrapper">
         <div class="img-link" v-if="item.thumbnailUrl" @click="selectItem(item)">
-          <img :src="item.thumbnailUrl" alt="考拉课">
+          <img :src="item.thumbnailUrl" alt="尚课">
         </div>
         <p class="item-digest">
           {{item.summary}}

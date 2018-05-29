@@ -1,6 +1,6 @@
 <template>
   <div class="f-footer">
-    <div class="container">
+    <!-- <div class="container">
       <div class="footer-wrapper idx-width">
         <transition name="fade">
           <div class="show-weixin" v-show="show">
@@ -20,7 +20,7 @@
         <p class="cop">© 2017 kaolako.com  蜀ICP备16007197号</p>
         <span class="text" @mouseover="weiXinHighLight" @mouseout="weiXinHideHighLight">官方微信</span>
       </div>
-    </div>
+    </div> -->
 
   </div>
 </template>

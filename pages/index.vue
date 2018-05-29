@@ -58,7 +58,7 @@
       </div>
       <div class="teacher">
         <div class="teacher-wrapper">
-          <h3 class="title">考拉精英名师</h3>
+          <h3 class="title">精英名师</h3>
           <Row>
             <i-col :lg="4" :md="8" :sm="12" :xs="12" v-for="(t, index4) in teacherList" :key="index4">
               <div class="teacher-intro" @click="toTeacherInfo(t)">
