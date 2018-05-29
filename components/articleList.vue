@@ -44,6 +44,7 @@ export default {
   margin-top 1rem
   .aricle-lwrap
     border-bottom 1px solid #d9dde1
+    padding 16px
     .item-title
       padding 1.5rem 0 0.5rem
       font-size 1.25rem

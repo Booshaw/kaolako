@@ -9,7 +9,7 @@
         </div>
       </div>
       <row>
-        <i-col :lg="17" :md="17" :sm="24">
+        <i-col :lg="17" :md="17" :sm="24" :offset="1">
           <div class="head-top">
             <div class="detail-path">
               <span class="bread-link" @click.stop="back">手记/</span>
@@ -26,7 +26,7 @@
             </div>
           </div>
         </i-col>
-        <i-col :lg="6" :md="6" :sm="0">
+        <i-col :lg="6" :md="6" :sm="0" :xs="0">
           <div class="head-adv">广告位</div>
         </i-col>
       </row>
@@ -160,8 +160,10 @@ export default {
     .head-top
       width 80%
       padding 1rem 0
-      margin-left 15%
+      // margin-left 15%
       text-align left
+      @media screen and (max-width 440px)
+        width 100%
       .detail-path
         font-size 0.625rem
         color #93999f
@@ -195,9 +197,11 @@ export default {
   .detail-content
     width 80%
     margin 0 auto
+    @media screen and (max-width 440px)
+      width 100%
     .content-wrapper
       margin 2rem auto
-      padding 32px
+      padding 32px 16px
       text-indent 2em
       font-size 0.875rem
       letter-spacing 1.5px
