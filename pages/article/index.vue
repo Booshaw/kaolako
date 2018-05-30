@@ -16,13 +16,13 @@
           </i-col>
         </Row>
       </div>
-      <div class="category-list">
+      <div class="category-list" v-if="categoryList && categoryList.length">
         <ul>
           <li v-for="(item, index) in categoryList" :key="index" :class="{selectCategoryClass: item.id === categoryCurrent}" @click.stop="selectCategory(item)" class="category-li">{{item.name}}</li>
           <!-- <li @click.stop="moreCategory = !moreCategory" class="arrow" v-if="categoryList.length && moreCategoryIcon && categoryList.length > 6"><Icon type="chevron-down"></Icon></li> -->
         </ul>
       </div>
-      <div class="tag-list">
+      <div class="tag-list" v-if="tagList && tagList.length">
         <ul>
           <li v-for="(item, index) in tagList" :key="index" :class="{selectTagClass: item.id === tagCurrent}" @click.stop="selectTag(item)" class="tag-li">{{item.name}}</li>
           <!-- <li @click.stop="moreTag = !moreTag" class="arrow"><Icon type="chevron-down"></Icon></li>           -->
