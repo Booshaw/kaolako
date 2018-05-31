@@ -16,7 +16,7 @@
         <div>
           <ul class="text">
             <li>忘记密码</li>
-            <li> <a href="">注册暂未开放,点击微信登录</a> </li>
+            <li> <a href="https://open.weixin.qq.com/connect/qrconnect?appid=wx0f96c2fcb159e3f7&redirect_uri=http://api.kaolako.com/kaola/weixin/login/callback&response_type=code&scope=snsapi_login&state=ToyNBdMpCa#wechat_redirect">注册暂未开放,点击微信登录</a> </li>
           </ul>
           </div>
       </div>
@@ -35,7 +35,7 @@ export default {
       return {
         username: '',
         password: '',
-        cookie: 'cookie',
+        cookie: 'cooki',
         // ruleInline: {
         //   username: [
         //     { required: true, message: '请输入用户名', trigger: 'blur' }
@@ -49,7 +49,7 @@ export default {
   },
   mounted() {
     this.$store.commit('setCookie', this.cookie)
-    console.log(this.cookie)
+    // console.log(this.cookie)
   },
   methods: {
     login() {
@@ -65,7 +65,7 @@ export default {
           this.$router.push({
             path: '/center'
           })
-          console.log(res.headers)
+          // console.log(`${res.data}res的headers`)
           // this.$store.commit('login/sigin',this.cookie)
         }
       })

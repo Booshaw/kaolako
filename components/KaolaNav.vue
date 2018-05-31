@@ -18,10 +18,10 @@
           <nuxt-link class="border-1px" to="/course" tag="li" @click.native="hiddenNav">课程</nuxt-link>
           <router-link class="border-1px" to="/teacher" tag="li" @click.native="hiddenNav">师资</router-link>
           <router-link class="border-1px" to="/article" tag="li" @click.native="hiddenNav">手记</router-link>
-          <router-link class="login border-1px" to="/login" tag="li" @click.native="toInfoPage">
+          <nuxt-link class="login border-1px" to="/center" tag="li" @click.native="toInfoPage">
           <span v-if="!token">登录</span>
             <Icon type="person"></Icon>
-          </router-link>
+          </nuxt-link>
           <router-link class="regin border-1px" to="/regist" tag="li" @click.native="hiddenNav" v-if="!token">注册</router-link>
           <li @click="logout" v-if="token">退出</li>
         </ul>
