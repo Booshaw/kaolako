@@ -27,29 +27,29 @@ import KaolaNav from '~/components/KaolaNav.vue'
 import KaolaFoo from '~/components/KaolaFoo.vue'
 import Service from '~/plugins/axios'
 export default {
-  data () {
+  data() {
     return {
       current: 0,
       navList: [
         {
-          navTitle: "动态",
-          path: "/center"
+          navTitle: '动态',
+          path: '/center'
         },
         {
-          navTitle: "课程",
-          path: "/center/course"
+          navTitle: '课程',
+          path: '/center/course'
         },
         {
-          navTitle: "手记",
-          path: "/center/article"
+          navTitle: '手记',
+          path: '/center/article'
         },
         {
-          navTitle: "认证",
-          path: "/center/identification"
+          navTitle: '认证',
+          path: '/center/identification'
         },
         {
-          navTitle: "预约",
-          path: "/center/order"
+          navTitle: '预约',
+          path: '/center/order'
         }
       ],
       personalInfo: {}
@@ -57,14 +57,34 @@ export default {
   },
   created() {
     this._getList()
+    this._getData()
   },
   methods: {
     _getList() {
-      return Service.get(`https://easy-mock.com/mock/5ac20177470d657aa5c1dd51/kaolako/homePage`)
-      .then((res) => {
+      return Service.get(
+        `https://easy-mock.com/mock/5ac20177470d657aa5c1dd51/kaolako/homePage`
+      ).then(res => {
         if (res.data.code === 200) {
-        this.personalInfo = res.data.data.personalInfo
-      }
+          this.personalInfo = res.data.data.personalInfo
+        }
+      })
+    },
+    _getData() {
+      return Service.post(
+        'http://kaola.eaon.win:8080/kaola/user/history/list',
+        {
+          type: 0,
+          page: 1,
+          pageSize: 10
+        }
+      ).then(res => {
+        if (res.data.code === '200') {
+          console.log(res.data)
+        } else if (res.data.code === '403') {
+          this.$router.replace({
+            path: '/login'
+          })
+        }
       })
     }
   },
@@ -76,14 +96,14 @@ export default {
 </script>
 <style lang="stylus">
 // .page-enter-active, .page-leave-active {
-//   transition: opacity .4s, transform .4s;
-//   transform-style: preserve-3d;
-//   backface-visibility: hidden;
-//   opacity: 1;
+// transition: opacity .4s, transform .4s;
+// transform-style: preserve-3d;
+// backface-visibility: hidden;
+// opacity: 1;
 // }
 // .page-enter, .page-leave-active {
-//   opacity: 0.5;
-//   transform: rotateY(100deg);
+// opacity: 0.5;
+// transform: rotateY(100deg);
 // }
 .center-container
   position relative
@@ -139,7 +159,7 @@ export default {
         &.nuxt-link-exact-active, .nuxt-link-active
           .tab-link
             color #f01414
-            border-bottom: 2px solid #f01414
+            border-bottom 2px solid #f01414
     .content
       font-size 16px
       height 100%

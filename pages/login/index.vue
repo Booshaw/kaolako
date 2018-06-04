@@ -60,7 +60,8 @@ export default {
       })
       .then(res => {
         if(res.data.code === '200') {
-          this.$Notice.info('操作成功')
+          // this.$Notice.info('操作成功')
+          this.$store.commit('login')
           // this.cookie = res.headers.Cookie
           this.$router.push({
             path: '/center'

@@ -23,13 +23,16 @@
             <Icon type="person"></Icon>
           </nuxt-link>
           <router-link class="regin border-1px" to="/regist" tag="li" @click.native="hiddenNav" v-if="!token">注册</router-link>
-          <li @click="logout" v-if="token">退出</li>
+          <li @click="logout" v-if="isLogin">退出</li>
         </ul>
       </div>
   </transition>
   </div>
 </template>
 <script>
+import Service from '~/plugins/axios'
+import { mapGetters } from 'vuex'
+import { mapMutations } from 'vuex'
 export default {
   data() {
     return {
@@ -46,6 +49,13 @@ export default {
     toInfoPage() {
     },
     logout() {
+      return Service.post('http://kaola.eaon.win:8080/kaola/logout')
+      .then( res=> {
+        this.$store.commit('logOut')
+          this.$router.push({
+            path: '/login'
+          })
+      })
     },
     hiddenNav() {
       let width =
@@ -69,6 +79,9 @@ export default {
         this.toggleNav = true
       }
     }
+  },
+  computed: {
+    ...mapGetters(['isLogin'])
   }
 }
 </script>
