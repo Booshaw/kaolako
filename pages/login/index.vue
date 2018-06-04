@@ -11,12 +11,13 @@
             <i-input v-model="password" placeholder="密码" type="password"></i-input>  
           </FormItem>
           <Button type="primary" size="large" @click.stop="login">登录</Button>
+          <a class="wechat-login" href="https://open.weixin.qq.com/connect/qrconnect?appid=wx0f96c2fcb159e3f7&redirect_uri=http://api.kaolako.com/kaola/weixin/login/callback&response_type=code&scope=snsapi_login&state=ToyNBdMpCa#wechat_redirect">微信登录</a>
           <!-- <Button type="info" size="large" @click.stop="wechatHandleClick" style="margin-left:10px">微信登录</Button> -->
         </Form>
         <div>
           <ul class="text">
             <li>忘记密码</li>
-            <li> <a href="https://open.weixin.qq.com/connect/qrconnect?appid=wx0f96c2fcb159e3f7&redirect_uri=http://api.kaolako.com/kaola/weixin/login/callback&response_type=code&scope=snsapi_login&state=ToyNBdMpCa#wechat_redirect">注册暂未开放,点击微信登录</a> </li>
+            <li class="wechat-login-a"> <a href="https://open.weixin.qq.com/connect/qrconnect?appid=wx0f96c2fcb159e3f7&redirect_uri=http://api.kaolako.com/kaola/weixin/login/callback&response_type=code&scope=snsapi_login&state=ToyNBdMpCa#wechat_redirect">注册暂未开放,点击微信登录</a> </li>
           </ul>
           </div>
       </div>
@@ -109,6 +110,13 @@ export default {
       padding 32px
       text-align center
       color #ffffff
+      .wechat-login
+        display inline-block
+        margin 0 16px
+        padding 8px 12px
+        background-color #0fcd1d
+        border-radius 4px
+        color #ffffff
       .text
         margin-top 16px
         font-size 12px
@@ -116,6 +124,9 @@ export default {
         li
           display inline
           margin-left 1rem
+        .wechat-login-a
+          a
+            color #ffffff
   .ivu-form .ivu-form-item-label
     color #ffffff
   .ivu-input

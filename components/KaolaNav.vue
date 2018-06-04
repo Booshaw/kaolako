@@ -18,12 +18,9 @@
           <nuxt-link class="border-1px" to="/course" tag="li" @click.native="hiddenNav">课程</nuxt-link>
           <router-link class="border-1px" to="/teacher" tag="li" @click.native="hiddenNav">师资</router-link>
           <router-link class="border-1px" to="/article" tag="li" @click.native="hiddenNav">手记</router-link>
-          <nuxt-link class="login border-1px" to="/center" tag="li" @click.native="toInfoPage">
-          <span v-if="!token">登录</span>
+          <nuxt-link class="login border-1px" to="/center" tag="li">
             <Icon type="person"></Icon>
           </nuxt-link>
-          <router-link class="regin border-1px" to="/regist" tag="li" @click.native="hiddenNav" v-if="!token">注册</router-link>
-          <li @click="logout" v-if="isLogin">退出</li>
         </ul>
       </div>
   </transition>
@@ -39,6 +36,7 @@ export default {
       toggleNav: false,
       token: 'token',
       navWidth: ''
+      // loginIn: false
     }
   },
   mounted() {
@@ -46,17 +44,6 @@ export default {
     // this.toInfoPage()
   },
   methods: {
-    toInfoPage() {
-    },
-    logout() {
-      return Service.post('http://kaola.eaon.win:8080/kaola/logout')
-      .then( res=> {
-        this.$store.commit('logOut')
-          this.$router.push({
-            path: '/login'
-          })
-      })
-    },
     hiddenNav() {
       let width =
         window.innerWidth ||

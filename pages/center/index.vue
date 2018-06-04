@@ -7,6 +7,7 @@
           <img :src="personalInfo.avatar" :alt="personalInfo.nickName">
           <span class="nick-name">{{personalInfo.nickName}}</span>
           <span class="gender" :class="{female: personalInfo.gender === '女'}"><Icon type="female" v-if="personalInfo.gender === '女'"></Icon><Icon type="male" v-else></Icon></span>
+          <span class="change-user" @click="logout">切换账号</span>
         </div>
       </div>
       <div class="nav">
@@ -86,6 +87,15 @@ export default {
           })
         }
       })
+    },
+    logout() {
+      return Service.post('http://kaola.eaon.win:8080/kaola/logout')
+      .then( res=> {
+        this.$store.commit('logOut')
+          this.$router.push({
+            path: '/login'
+          })
+      })
     }
   },
   components: {
@@ -141,6 +151,12 @@ export default {
         font-size 14px
         color #0091ea
         padding 0 4px
+      .change-user
+        color #ffffff
+        cursor pointer
+        padding 4px 0
+        &:hover
+          color #f01414
       .female
         color #e91e63
     .nav
