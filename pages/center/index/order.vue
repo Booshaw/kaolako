@@ -1,7 +1,7 @@
 <template>
   <section class="c-container">
     <div class="c-content">
-      <h2 class="title">发布预约 <span @click="addOrderModal = !addOrderModal"><Icon type="plus-circled">添加预约</Icon></span> </h2>
+      <h2 class="title">发布预约 <span @click="checkAddOrder"><Icon type="plus-circled">添加预约</Icon></span> </h2>
       <Row>
         <i-col :lg="8" :md="12" :sm="24" :xs="24" v-for="(item, index) in order" :key="index">
           <div class="box">
@@ -19,7 +19,7 @@
                 <Icon type="ios-telephone"></Icon> <span>{{item.phone}}</span>
               </li>              
               <li>
-                <Icon type="calendar"></Icon> <span>{{item.startDate}} <span>到</span>{{item.endDate}}</span>
+                <Icon type="calendar"></Icon> <span>{{item.startDate | parseTime()}} <span>到</span>{{item.endDate | parseTime()}}</span>
               </li>              
               <li>
                 <Icon type="speakerphone"></Icon> <span>{{item.description}}</span>
@@ -36,7 +36,7 @@
     <Modal
       v-model="addOrderModal"
       title="发布课程预约"
-      @on-ok="uploadOrder"
+      @on-ok="addOrder"
       transfer>
       <Form :label-width="80">
         <FormItem label="姓名:">
@@ -52,10 +52,10 @@
           <i-input v-model="addOrderData.phone"></i-input>
         </FormItem>
         <FormItem label="约课时间:">
-          <DatePicker type="daterange" v-model="addOrderData.startDate" placeholder="开始日期" style="width: 40%"></DatePicker>
-          <DatePicker type="daterange" v-model="addOrderData.endDate" placeholder="结束日期" style="width: 40%"></DatePicker>
+          <DatePicker v-model="addOrderData.startDate" placeholder="开始日期" style="width: 40%"></DatePicker>
+          <DatePicker v-model="addOrderData.endDate" placeholder="结束日期" style="width: 40%"></DatePicker>
         </FormItem>
-        <FormItem label="个人简介:">
+        <FormItem label="说明:">
           <span style="text-align:left">{{addOrderData.description.length}}/200</span>
           <i-input v-model="addOrderData.description" type="textarea" :autosize="{minRows: 2,maxRows: 5}" :maxlength="200"></i-input>
         </FormItem>
@@ -65,6 +65,7 @@
 </template>
 <script>
 import Service from '~/plugins/axios'
+import { getOrderList, uploadOrder, deleteOrder } from '~/api/api'
 export default {
   data() {
     return {
@@ -79,11 +80,11 @@ export default {
         id: '',
         teacher: '',
         category: '',
-        address: null,
+        address: '',
         phone: '',
         startDate: '',
         endDate: '',
-        description: '你'
+        description: ''
       } // 添加预约课程信息
     }
   },
@@ -92,13 +93,22 @@ export default {
   },
   methods: {
     _getList() {
-      return Service.get(
-        `https://easy-mock.com/mock/5ac20177470d657aa5c1dd51/kaolako/homePage`
-      ).then(res => {
-        if (res.data.code === 200) {
-          this.order = res.data.data.order
+      getOrderList().then(res => {
+        if (res.code === '200') {
+          this.order = res.data
         }
       })
+    },
+    checkAddOrder() {
+      if (this.order.length < 3) {
+        this.addOrderModal = !this.addOrderModal
+        let obj = Object.assign(this.addOrderData)
+      } else {
+        this.$Notice.error({
+          title: '最多只能发布三个预约信息',
+          desc: false
+        })
+      }
     },
     // 文件上传
     handleBeforeUpload() {
@@ -136,14 +146,37 @@ export default {
         duration: 5
       })
     },
-    uploadOrder() {
-      let obj = Object.assign(this.addOrderData)
-      this.order.push(obj)
-      console.log(obj)
+    addOrder() {
+      let obj = Object.assign(this.addOrderData)      
+      let params = this.order.length < 3 ? obj : {}
+      uploadOrder(params).then(res => {
+        if (res.code === '200') {
+          this.$Notice.info({
+            title: res.message,
+            desc: false
+          })
+          this._getList()
+          this.addOrderModal = false
+        } else {
+          this.$Notice.error({
+            title: res.message,
+            desc: false
+          })
+        }
+      })
     },
     deleteOrder(index) {
-      this.order.splice(index, 1)
-      // 发起网络删除
+      this.$set(this.order[index], 'delete', 1)
+      let params = this.order[index]
+      deleteOrder(params).then(res => {
+        if (res.code === '200') {
+          this._getList()
+          this.$Notice.info({
+            title: res.message,
+            desc: false
+          })
+        }
+      })
     }
   },
   filters: {
@@ -173,7 +206,8 @@ export default {
       }
       const timeStr = format.replace(/{(y|m|d|h|i|s|a)+}/g, (result, key) => {
         let value = formatObj[key]
-        if (key === 'a') return ['一', '二', '三', '四', '五', '六', '日'][value - 1]
+        if (key === 'a')
+          return ['一', '二', '三', '四', '五', '六', '日'][value - 1]
         if (result.length > 0 && value < 10) {
           value = '0' + value
         }
@@ -190,6 +224,8 @@ export default {
   position relative
   height 100%
   width 100%
+  background-color #f8f8f9
+  padding 16px
   .c-content
     width 60%
     margin 0 auto
@@ -203,7 +239,7 @@ export default {
       border-bottom 1px solid #eeeeee
       span
         cursor pointer
-        color #2d8cf0        
+        color #2d8cf0
     .box
       margin 16px
       // background #80818f
@@ -212,6 +248,7 @@ export default {
       color #80848f
       padding 16px
       border-radius 8px
+      font-size 14px
       li
         margin-bottom 16px
         border-bottom 1px solid #e9eaec
@@ -224,8 +261,6 @@ export default {
         span
           margin 0 8px
           cursor pointer
-        // &:hover
-        //   cursor pointer
   .no-result
     position absolute
     top 30%

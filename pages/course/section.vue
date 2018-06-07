@@ -40,6 +40,7 @@
 // import KaolaNav from '~/components/KaolaNav.vue'
 import KaolaFoo from '~/components/KaolaFoo.vue'
 import Service from '~/plugins/axios'
+import {getVideoDetail} from '~/api/api'
   export default {
     data () {
       return {
@@ -86,19 +87,17 @@ import Service from '~/plugins/axios'
     },
     methods: {
       _getVideoDetail() {
-      return Service.post(
-        `http://api.kaolako.com/kaola/web/course/episode`,
-        {
-          id: 1
+        let params ={
+        id: this.$route.query.id
         }
-      ).then(res => {
-        console.log(res)
-        if (res.data.code === '200') {
-          this.title = res.data.data.title
-          this.playerOptions.sources = res.data.data.playSet
+      getVideoDetail(params).then(res => {
+        if (res.code === '200') {
+          this.title = res.data.title
+          this.playerOptions.sources = res.data.playSet
         } else {
           this.$Notice.error({
-            title: res.data.message
+            title: res.message,
+            desc: false
           })
         }
       })

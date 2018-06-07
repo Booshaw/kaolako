@@ -89,7 +89,8 @@
 <script>
 import KaolaNav from '~/components/KaolaNav.vue'
 import KaolaFoo from '~/components/KaolaFoo.vue'
-import Service from '~/plugins/axios'
+// import Service from '~/plugins/axios'
+import { getCategoryTag, getCourseList } from '~/api/api'
 export default {
   data() {
     return {
@@ -131,29 +132,31 @@ export default {
     this.initMoreArrow()
   },
   methods: {
-     _getCategoryTag() {
-      return Service.post(`http://api.kaolako.com/kaola/common/dict/get`, {
+    _getCategoryTag() {
+      let params = {
         dictType: ['courseCategory']
-      }).then(res => {
+      }
+      getCategoryTag(params).then(res => {
         if ((res.code = '200')) {
-          this.categoryList = res.data.data.courseCategory
+          this.categoryList = res.data.courseCategory
         }
       })
     },
     _getCourseList() {
       this.noResult = false
       this.loading = true
-      return Service.post(`http://api.kaolako.com/kaola/web/course/list`, {
+      let params = {
         category: this.categoryCurrent,
         page: this.page,
         pageSize: this.pageSize
-      }).then(res => {
-        if (res.data.code === '200') {
-          this.courseList = res.data.data.pageData
-          this.totalRecord = res.data.data.totalRecord
+      }
+      getCourseList(params).then(res => {
+        if (res.code === '200') {
+          this.courseList = res.data.pageData
+          this.totalRecord = res.data.totalRecord
           this.loading = false
           this.pageShow = true
-        } else{
+        } else {
           this.noResult = true
         }
       })
@@ -191,8 +194,8 @@ export default {
       // console.log(this.moreCategoryIcon)
     },
     initMoreArrow() {
-      console.log(this.clientWidth)
-      console.log(`长度为${this.categoryList}`)
+      // console.log(this.clientWidth)
+      // console.log(`长度为${this.categoryList}`)
     }
   },
   components: {
@@ -333,11 +336,11 @@ export default {
         .item
           display inline-block
           width 25%
-          transition .3s all linear          
-          @media screen and (max-width:440px)
+          transition 0.3s all linear
+          @media screen and (max-width: 440px)
             width 50%
           &:hover
-            box-shadow 0 8px 16px 0 rgba(7,17,27,0.1)
+            box-shadow 0 8px 16px 0 rgba(7, 17, 27, 0.1)
             border-radius 8px
           .box
             margin 12px 12px 36px
@@ -428,7 +431,7 @@ export default {
     .no-result
       text-align center
       padding 25% 0
-      color #c3cbd6      
+      color #c3cbd6
   .footer
     flex 0 0 auto
   .ivu-rate

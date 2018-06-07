@@ -10,7 +10,7 @@
           <FormItem label="密码" prop="password">
             <i-input v-model="password" placeholder="密码" type="password"></i-input>  
           </FormItem>
-          <Button type="primary" size="large" @click.stop="login">登录</Button>
+          <Button type="primary" size="large" @click.stop="loginAccount">登录</Button>
           <a class="wechat-login" href="https://open.weixin.qq.com/connect/qrconnect?appid=wx0f96c2fcb159e3f7&redirect_uri=http://api.kaolako.com/kaola/weixin/login/callback&response_type=code&scope=snsapi_login&state=ToyNBdMpCa#wechat_redirect">微信登录</a>
           <!-- <Button type="info" size="large" @click.stop="wechatHandleClick" style="margin-left:10px">微信登录</Button> -->
         </Form>
@@ -29,55 +29,54 @@
 // import AppLogo from '~/components/AppLogo.vue'
 import KaolaNav from '~/components/KaolaNav.vue'
 import KaolaFoo from '~/components/KaolaFoo.vue'
-import Service from '~/plugins/axios'
+import {login} from '~/api/api'
 import { mapMutations } from 'vuex'
 export default {
-  data () {
-      return {
-        username: '',
-        password: '',
-        cookie: 'cooki',
-        // ruleInline: {
-        //   username: [
-        //     { required: true, message: '请输入用户名', trigger: 'blur' }
-        //   ],
-        //   password: [
-        //     { required: true, message: '请输入密码.', trigger: 'blur' },
-        //     { type: 'string', min: 6, message: '密码不得少于6位', trigger: 'blur' }
-        //   ]
-        // }
-      }
+  data() {
+    return {
+      username: '',
+      password: '',
+      cookie: 'cooki'
+      // ruleInline: {
+      //   username: [
+      //     { required: true, message: '请输入用户名', trigger: 'blur' }
+      //   ],
+      //   password: [
+      //     { required: true, message: '请输入密码.', trigger: 'blur' },
+      //     { type: 'string', min: 6, message: '密码不得少于6位', trigger: 'blur' }
+      //   ]
+      // }
+    }
   },
   mounted() {
     this.$store.commit('setCookie', this.cookie)
     // console.log(this.cookie)
   },
   methods: {
-    login() {
-      return Service.post('http://kaola.eaon.win:8080/kaola/login',
-      {
+    loginAccount() {
+      let params = {
         username: this.username,
         password: this.password
-      })
-      .then(res => {
-        if(res.data.code === '200') {
+      }
+      login(params).then(res => {
+        if (res.code === '200') {
           // this.$Notice.info('操作成功')
           this.$store.commit('login')
           // this.cookie = res.headers.Cookie
-          this.$router.push({
-            path: '/center'
-          })
+          this.$router.go(-1)
           // console.log(`${res.data}res的headers`)
           // this.$store.commit('login/sigin',this.cookie)
+        } else {
+          this.$Notice.error({
+            title: res.message,
+            desc: false
+          })
         }
       })
-    },
-    wechatHandleClick() {
-    },
+    },          
+    wechatHandleClick() {}
   },
-  computed: {
-
-  },
+  computed: {},
   components: {
     KaolaNav,
     KaolaFoo
@@ -106,7 +105,7 @@ export default {
       // margin 48px auto
       // background #ffffff
       border-radius 8px
-      box-shadow 0 2px 4px rgba(7,17,27,0.1)
+      box-shadow 0 2px 4px rgba(7, 17, 27, 0.1)
       padding 32px
       text-align center
       color #ffffff

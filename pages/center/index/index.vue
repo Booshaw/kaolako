@@ -1,12 +1,12 @@
 <template>
   <section class="c-i-container">
     <div class="c-content">
-      <div class="item" v-for="(item, index) in personalInfo.timeLineList" :key="index" >
+      <div class="item" v-for="(item, index) in personalInfo" :key="index" >
         <div class="aricle-lwrap" v-if="item.type === 1">
-          <h3 class="item-title" @click="selectItem(item)">{{item.title}}</h3>
+          <h3 class="item-title" @click="toArticleDetail(item)">{{item.title}}</h3>
           <!--text-->
           <div class="item-digest-wrapper">
-            <div class="img-link" v-if="item.image" @click="selectItem(item)">
+            <div class="img-link" v-if="item.image" @click="toArticleDetail(item)">
               <img :src="item.image" alt="尚课">
             </div>
             <p class="item-digest">
@@ -50,6 +50,15 @@
           <span class="time">{{item.createdTime}}</span>
         </div>
       </div>
+      <div class="pages-wrapper" v-if="personalInfo && personalInfo.length">
+        <Page :total="totalRecord" size="small" transfer @on-change="pageNum" @on-page-size-change="pageSizeNum"></Page>
+      </div>
+    </div>
+    <div v-if="loading">
+      <Spin fix>
+        <Icon type="load-c" size=18 class="icon-load"></Icon>
+        <div>Loading</div>
+      </Spin>
     </div>
     <div class="no-result" v-if="noResult">
       <p>暂无任何动态</p>
@@ -57,12 +66,18 @@
   </section>
 </template>
 <script>
-import Service from '~/plugins/axios'
+// import Service from '~/plugins/axios'
+import {getCenterIndex} from '~/api/api'
 export default {
-  data () {
+  data() {
     return {
-      personalInfo: {},
-      noResult: false
+      personalInfo: [],
+      noResult: false,
+      loading: false,
+      page: 1,
+      pageSize: 10,
+      totalRecord: 0,
+      pageShow: false
     }
   },
   created() {
@@ -70,20 +85,55 @@ export default {
   },
   methods: {
     _getList() {
-      return Service.get(`https://easy-mock.com/mock/5ac20177470d657aa5c1dd51/kaolako/homePage`)
-      .then((res) => {
-        if (res.data.code === 200) {
-        this.personalInfo = res.data.data.personalInfo
-      } else {
-        this.noResult = true
+      let params = {
+        type: 0,
+        page: this.page,
+        pageSize: this.pageSize
       }
+      this.loading = true  
+      getCenterIndex(params).then(res => {
+        if (res.code === '200') {
+          this.personalInfo = res.data.pageData
+          this.totalRecord = res.data.totalRecord
+          this.loading = false
+          this.pageShow = true
+        } else if (res.code === '403') {
+          this.$router.replace({
+            path: '/login'
+          })
+        } else {
+          this.loading = false
+          this.noResult = true
+          this.$Notice.error({
+            title: res.message,
+            desc: false
+          })
+        }
       })
     },
-    selectItem() {},
-    toCourseDetail() {}
+    toArticleDetail(item) {
+      this.$router.push({
+        path: `/article/detail`,
+        query: { id: item.id }
+      })
+    },
+    toCourseDetail(item) {
+      this.$router.push({
+        path: '/course/courseDetail',
+        query: { id: item.id }
+      })
+    },
+    pageNum(page) {
+      // 分页插件获取点击page页码
+      this.page = page
+      this._getList()
+    },
+    pageSizeNum(size) {
+      this.pageSize = size
+      this._getList()
+    },
   },
-  components: {
-  }
+  components: {}
 }
 </script>
 <style lang="stylus">
@@ -91,6 +141,8 @@ export default {
   position relative
   height 100%
   width 100%
+  background-color #f8f8f9
+  padding 16px 
   .c-content
     width 60%
     margin 0 auto
@@ -130,7 +182,7 @@ export default {
             left -4px
       .aricle-lwrap
         // border-bottom 1px solid #d9dde1
-        background #f8f8f9
+        background #ffffff
         padding 8px 16px
         border-radius 8px
         .item-title
@@ -169,17 +221,17 @@ export default {
             line-height 2rem
             color #787d82
             margin-top -5px
-            no-wrap(4,2rem)
+            no-wrap(4, 2rem)
             @media screen and (max-device-width: 420px)
               line-height 1.5rem
-              no-wrap(4,1.5rem)  
+              no-wrap(4, 1.5rem)
         .item-btm
           font-size 14px
           color #93999f
           line-height 18px
           padding 16px 0 18px
           @media screen and (max-width: 440px)
-            font-size 12px 
+            font-size 12px
           .l
             text-align left
             .hd-pic
@@ -196,13 +248,13 @@ export default {
         overflow hidden
         border-bottom 1px solid #d9dde1
         padding 16px
-        background-color #f8f8f9
+        background-color #ffffff
         border-radius 8px
         &:hover
           cursor pointer
         .category-box
           position relative
-          transition .3s all linear
+          transition 0.3s all linear
           height 130px
           max-height 148px
           background-color #eeeeee
@@ -211,7 +263,7 @@ export default {
           .category-gradient
             position absolute
             z-index 0
-            background-image linear-gradient(-180deg, rgba(7,17,27,0) 0%, rgba(7,17,27,0.6) 97%)
+            background-image linear-gradient(-180deg, rgba(7, 17, 27, 0) 0%, rgba(7, 17, 27, 0.6) 97%)
             border-radius 12px
             left 0
             bottom 0
@@ -238,7 +290,7 @@ export default {
               font-size 14px
               color #ffffff
               line-height 18px
-              text-shadow 0 2px 4px rgba(7,17,27,0.5)
+              text-shadow 0 2px 4px rgba(7, 17, 27, 0.5)
               font-weight 700
         .categor-intro-box
           position relative
@@ -275,7 +327,7 @@ export default {
             word-break break-all
             word-wrap break-word
             overflow hidden
-            transition .3s all linear
+            transition 0.3s all linear
             text-overflow -o-ellipsis-lastline
             display -webkit-box
             -webkit-line-clamp 2

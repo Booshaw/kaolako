@@ -77,9 +77,9 @@
 // import AppLogo from '~/components/AppLogo.vue'
 import KaolaNav from '~/components/KaolaNav.vue'
 import KaolaFoo from '~/components/KaolaFoo.vue'
-import Service from '~/plugins/axios'
+import {getCourseDetail} from '~/api/api'
 export default {
-  data () {
+  data() {
     return {
       valueItem: [],
       section: {},
@@ -91,22 +91,20 @@ export default {
   //   return Service.post(`http://api.kaolako.com/kaola/web/course/detail`)
   //   .then((res) => {
   //     console.log(res)
-  //     return { 
+  //     return {
   //       section: res.data.data}
   //   })
   // },
   methods: {
     _getCourseDetail() {
       this.loading = true
-      return Service.post(
-        `http://api.kaolako.com/kaola/web/course/detail`,
-        {
-          id: this.$route.query.id
-        }
-      ).then(res => {
-        if (res.data.code === '200') {
-          this.section = res.data.data
-          this.sectionListLength = res.data.data.sectionList.length
+      let params = {
+        id: this.$route.query.id
+      }
+      getCourseDetail(params).then(res => {
+        if (res.code === '200') {
+          this.section = res.data
+          this.sectionListLength = res.data.sectionList.length
           this.loading = false
         }
       })
@@ -218,9 +216,9 @@ export default {
             background #ffffff
             border-radius 8px
             margin-bottom 16px
-            transition .3s all linear
+            transition 0.3s all linear
             &:hover
-              box-shadow 0 8px 16px 0 rgba(7,17,27,0.1)
+              box-shadow 0 8px 16px 0 rgba(7, 17, 27, 0.1)
             h3
               position relative
               text-align left
@@ -234,7 +232,7 @@ export default {
               padding 0 32px 0 10px
               font-size 14px
               box-sizing border-box
-              transition .3s all linear
+              transition 0.3s all linear
               overflow hidden
               color #93999F
               &:hover
@@ -267,7 +265,7 @@ export default {
             width 60px
             height 60px
             border-radius 50%
-            vertical-align middle 
+            vertical-align middle
           .t-name
             display inline-block
             font-size 16px

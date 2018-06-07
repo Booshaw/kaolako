@@ -67,6 +67,7 @@
 import KaolaNav from '~/components/KaolaNav.vue'
 import KaolaFoo from '~/components/KaolaFoo.vue'
 import Service from '~/plugins/axios'
+import {getCategoryTag, getTeacherList} from '~/api/api'
 export default {
   data() {
     return {
@@ -97,24 +98,25 @@ export default {
   },
   methods: {
     _getCategory() {
-      return Service.post(`http://api.kaolako.com/kaola/common/dict/get`, {
+      let params = {
         dictType: ['courseCategory']
-      }).then(res => {
-        console.log(res)
-        if (res.data.code === '200') {
-          this.category = res.data.data.courseCategory
+      }
+      getCategoryTag(params).then(res => {
+        if ((res.code = '200')) {
+          this.category = res.data.courseCategory
         }
       })
     },
     _getTeacherList() {
       this.noResult = false
       this.loading = true
-      return Service.post(`http://api.kaolako.com/kaola/web/teacher/list`, {
+      let params = {
         category: this.categoryCurrent
-      }).then(res => {
+      }
+      getTeacherList(params).then(res => {
         // console.log(res)
-        if (res.data.code === '200') {
-          this.teacherList = res.data.data.pageData
+        if (res.code === '200') {
+          this.teacherList = res.data.pageData
           // this.pageShow = true
           this.loading = false
         } else {

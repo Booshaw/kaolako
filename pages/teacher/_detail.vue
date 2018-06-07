@@ -7,7 +7,7 @@
           <img :src="teacherInfo.avatar" :alt="teacherInfo.nickName">
           <span class="nick-name">{{teacherInfo.nickName}}</span>
           <span class="gender" :class="{female: teacherInfo.gender === '女'}"><Icon type="female" v-if="teacherInfo.gender === '女'"></Icon><Icon type="male" v-else></Icon></span>
-          <span>{{teacherInfo.introduction}}</span>
+          <span class="description">{{teacherInfo.introduction}}</span>
         </div>
       </div>
       <Row class="content-wrapper">
@@ -78,6 +78,7 @@
       </div>
         </i-col>
         <i-col :lg="6" :md="6" :sm="24" :xs="24">
+          <h2 class="title">约课安排</h2>
           <div class="order-box" v-for="(item, index) in teacherInfo.order" :key="index">
             <ul>
               <!-- <li>
@@ -110,7 +111,7 @@
 // import AppLogo from '~/components/AppLogo.vue'
 import KaolaNav from '~/components/KaolaNav.vue'
 import KaolaFoo from '~/components/KaolaFoo.vue'
-import Service from '~/plugins/axios'
+import {getTeacherDetail} from '~/api/api'
 export default {
   data() {
     return {
@@ -131,14 +132,15 @@ export default {
   methods: {
     _getList() {
       this.loading = true
-      return Service.post(`http://api.kaolako.com/kaola/web/teacher/detail`, {
+      let params = {
         page: this.page,
         pageSize: this.pageSize,
         id: this.$route.query.id
-      }).then(res => {
-        if (res.data.code === '200') {
-          this.teacherInfo = res.data.data
-          this.timeLineList = res.data.data.timeLineList
+      }
+      getTeacherDetail(params).then(res => {
+        if (res.code === '200') {
+          this.teacherInfo = res.data
+          this.timeLineList = res.data.timeLineList
           this.loading = false
         }
       })
@@ -221,6 +223,9 @@ export default {
         padding 0 4px
       .female
         color #e91e63
+      .description
+        color #ffffff
+        padding 4px 8px
     .content-wrapper
       width 80%
       margin 16px auto
@@ -411,6 +416,11 @@ export default {
                 -webkit-line-clamp 2
                 -webkit-box-orient vertical
                 text-align left
+      .title
+        font-size 16px
+        text-align left
+        padding 8px 12px
+        font-weight bold
       .order-box
         margin 16px
         // background #80818f

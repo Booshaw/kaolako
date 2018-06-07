@@ -69,7 +69,7 @@ import ArticleList from '~/components/articleList.vue'
 import PopList from '~/components/popList.vue'
 import KaolaNav from '~/components/KaolaNav.vue'
 import KaolaFoo from '~/components/KaolaFoo.vue'
-import Service from '~/plugins/axios'
+import { getCategoryTag, getArticleList } from '~/api/api.js'
 export default {
   data() {
     return {
@@ -100,33 +100,32 @@ export default {
   },
   methods: {
     _getCategoryTag() {
-      return Service.post(`http://api.kaolako.com/kaola/common/dict/get`, {
+      let params = {
         dictType: ['articleCategory', 'articleTag']
-      }).then(res => {
+      }
+      getCategoryTag(params).then(res => {
         if ((res.code = '200')) {
-          this.categoryList = res.data.data.articleCategory
-          this.tagList = res.data.data.articleTag
+          this.categoryList = res.data.articleCategory
+          this.tagList = res.data.articleTag
         }
       })
     },
     _getArticleList() {
       this.noResult = false
       this.loading = true
-      return Service.post(`http://api.kaolako.com/kaola/web/article/list`, {
+      let params = {
         category: this.categoryCurrent,
         tag: this.tagCurrent,
         page: this.page,
         pageSize: this.pageSize
-      }).then(res => {
-        if (res.data.code === '200') {
-          this.articleList = res.data.data.pageData
-          // this.tagList = res.data.data.tagList
-          // this.categoryList = res.data.data.categoryList
-          this.pop = res.data.data.pageData.slice(0, 10)
-          this.totalRecord = res.data.data.totalRecord
+      }
+      getArticleList(params).then(res => {
+        if (res.code === '200') {
+          this.articleList = res.data.pageData
+          this.pop = res.data.pageData.slice(0, 10)
+          this.totalRecord = res.data.totalRecord
           this.loading = false
-          this.pageShow = true  
-          // this.courseCategoryList = res.data.data.courseCategoryList
+          this.pageShow = true
         } else {
           this.loading = false
           this.noResult = true
@@ -157,7 +156,7 @@ export default {
       this._getArticleList()
     },
     selectTag(item) {
-      this.tagCurrent = item.id 
+      this.tagCurrent = item.id
       this._getArticleList()
     }
   },

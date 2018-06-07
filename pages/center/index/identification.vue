@@ -21,18 +21,28 @@
       @on-ok="uploadInformation"
       transfer>
       <Form :label-width="80">
+        <FormItem label="认证类型">
+          <i-select :model.sync="type" size="small">
+            <i-option value= 2>老师认证</i-option>
+            <i-option value= 1>用户认证</i-option>
+          </i-select>
+        </FormItem>
         <FormItem label="姓名:">
-          <i-input v-model="name"></i-input>
+          <i-input v-model="realname"></i-input>
         </FormItem>
         <FormItem label="身份证号码:">
           <i-input v-model="idCard"></i-input>
         </FormItem>
+        <FormItem label="主讲科目:">
+          <i-input v-model="speciality"></i-input>
+        </FormItem>
         <FormItem label="个人简介:">
-          <i-input v-model="description" type="textarea" :autosize="{minRows: 2,maxRows: 5}"></i-input>
+          <i-input v-model="description" type="textarea" :autosize="{minRows: 2,maxRows: 5}" :maxlength="200"></i-input>
         </FormItem>
       </Form>
       <Upload
-            :show-upload-list="false"
+            :with-credentials="true"
+            :show-upload-list="true"
             :default-file-list="defaultList"
             :on-success="handleSuccess"
             :max-size="20480"
@@ -40,10 +50,10 @@
             :on-format-error="handleFormatError"
             :on-exceeded-size="handleMaxSize"
             :before-upload="handleBeforeUpload"
-            action="http://kaola.eaon.win:8080/kaola/common/file/upload">
+            action="http://api.kaolako.com/kaola/common/file/upload">
             <div style="padding: 20px 0">
-                <Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
-                <p>请上传手持身份证照片,确保身份证信息清晰可见</p>
+                <Icon type="ios-cloud-upload" size="52" style="color: #3399ff;cursor:pointer;"></Icon>
+                <p>请上传手持身份证照片,确保所有信息清晰可见</p>
             </div>
           </Upload>
     </Modal>
@@ -53,7 +63,7 @@
   </section>
 </template>
 <script>
-import Service from '~/plugins/axios'
+import {uploadIdentification} from '~/api/api'
 export default {
   data () {
     return {
@@ -61,8 +71,10 @@ export default {
       noResult: false,
       identifyModel: false,
       defaultList: [],
-      name: '', // 姓名
+      type: 2, // 认证类型
+      realname: '', // 姓名
       idCard: '', // 身份证
+      speciality: '', // 主讲科目
       description: '', // 个人简介
       image: [], // 身份证照片
     }
@@ -83,6 +95,8 @@ export default {
     },
     handleSuccess(res, file) { // 文件上传成功钩子
       if (res.code === '200') {
+        this.image.push(res.data.id)
+        console.log(this.image)        
         this.$Notice.success({
           title: '操作提示',
           desc: '上传成功',
@@ -103,7 +117,29 @@ export default {
         duration: 5
       })
     },
-    uploadInformation() {}
+    uploadInformation() {
+      let params = {
+        type: this.type,
+        realName: this.realname,
+        image: this.image,
+        idCard: this.idCard,
+        introduction: this.introduction,
+        speciality: this.speciality
+      }
+      uploadIdentification(params).then(res => {
+        if(res.code === '200') {
+          this.$Notice.info({
+            thitle: res.message,
+            desc: false
+          })
+        } else {
+          this.$Notice.error({
+            title: res.message,
+            desc: false
+          })
+        }
+      })
+    }
   },
   components: {
   }
@@ -114,6 +150,7 @@ export default {
   position relative
   height 100%
   width 100%
+  padding 16px
   .c-content
     width 60%
     margin 0 auto

@@ -1,31 +1,28 @@
-/*
- *
- * axios
- *
-*/
-
-import Vue from 'vue'
 import axios from 'axios'
-// import apiConfig from '~/api.config'
 
-const service = axios.create({
-  baseURL: '',
-  withCredentials: true
-})
+// axios 配置
+axios.defaults.timeout = 5000;
+// axios.defaults.baseURL = '/api'
+axios.defaults.baseURL = ''
+axios.defaults.withCredentials=true
+// http request 拦截器
+axios.interceptors.request.use(
+    config => {
+        return config;
+    },
+    err => {
+        return Promise.reject(err);
+    });
+// http response 拦截器
+axios.interceptors.response.use(
+    response => {
+        return response;
+    },
+    error => {
+        if (error) {
+        }
+        console.log(JSON.stringify(error)); // console : Error: Request failed with status code 402
+        return Promise.reject(error)
+    });
 
-// 拦截器
-service.interceptors.request.use(config => {
-  return config
-}, error => {
-  return Promise.reject(error)
-})
-
-service.interceptors.response.use(response => {
-  // console.log(response)
-  return response
-}, error => {
-  return Promise.reject(error)
-})
-
-Vue.prototype.$http = axios
-export default service
+export default axios;

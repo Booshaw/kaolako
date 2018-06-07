@@ -45,7 +45,7 @@
             :on-format-error="handleFormatError"
             :on-exceeded-size="handleMaxSize"
             :before-upload="handleBeforeUpload"
-            action="http://kaola.eaon.win:8080/kaola/common/file/upload">
+            action="http://api.kaolako.com/kaola/common/file/upload">
             <div class="logo-img">
               <img height="400" width="220" :src="thumbnailUrl" alt="手记缩略图" v-if="thumbnailUrl">
               <div v-else>上传手记封面图</div>
@@ -57,7 +57,7 @@
           </Upload>
         </div>
         <div>
-          <Button type="error" :loading="loading" @click="updateArticle">
+          <Button type="error" :loading="loading" @click="updateArticleDetail">
             <span v-if="!loading">发布手记</span>
             <span v-else>Loading...</span>
           </Button>
@@ -70,13 +70,7 @@
 <script>
 import KaolaNav from '~/components/KaolaNav.vue'
 import KaolaFoo from '~/components/KaolaFoo.vue'
-// import hljs from 'highlight.js'
-// import VueQuillEditor, { Quill } from 'vue-quill-editor'
-// import { ImageDrop } from 'quill-image-drop-module'
-// import ImageResize from 'quill-image-resize-module'
-// Quill.register('modules/imageDrop', ImageDrop)
-// Quill.register('modules/imageResize', ImageResize)
-import Service from '~/plugins/axios'
+import { getCategoryTag, uploadArticle } from '~/api/api'
 import { mapGetters } from 'vuex'
 export default {
   data() {
@@ -129,7 +123,7 @@ export default {
     }
   },
   created() {
-    this._getTagList() // 获取文章标签列表
+    this._getCategoryTag() // 获取文章标签列表
     console.log(this.cookie)
   },
   computed: {
@@ -149,22 +143,18 @@ export default {
     })
   },
   methods: {
-    _getTagList() {
-      return Service.get(
-        `https://easy-mock.com/mock/5ac20177470d657aa5c1dd51/kaolako/homePage`
-      ).then(res => {
-        if (res.data.code === 200) {
-          console.log(res)
-          ;(this.tagList = res.data.data.tagList),
-            (this.categoryList = res.data.data.categoryList)
+    _getCategoryTag() {
+      let params = {
+        dictType: ['articleCategory', 'articleTag']
+      }
+      getCategoryTag(params).then(res => {
+        if ((res.code = '200')) {
+          this.categoryList = res.data.articleCategory.slice(1)
+          this.tagList = res.data.articleTag.slice(1)
         }
       })
     },
     selectTagGrou(item) {
-      // if(this.tagCurrent.indexOf(item.id) === -1) {
-      //   console.log(i)
-      // }
-
       let index = this.tagCurrent.indexOf(item.id)
       if (index === -1) {
         this.tagCurrent.push(item.id)
@@ -174,38 +164,31 @@ export default {
       this.tagCurrent = Object.assign(this.tagCurrent.slice(0, 3))
       console.log(this.tagCurrent)
     },
-    updateArticle() {
+    updateArticleDetail() {
       this.loading = true
-      return Service.post('http://kaola.eaon.win:8080/kaola/user/article/add', {
+      let params = {
         title: this.title,
         thumbnail: this.thumbnail,
         category: this.categoryCurrent,
         tag: this.tagCurrent,
         content: this.content
-      }).then(res => {
-        if (res.data.code === '200') {
+      }
+      uploadArticle(params).then(res => {
+        console.log(res)
+        if (res.code === '200') {
           this.loading = false
-          this.$Notice.info('操作成功')
+          this.$Notice.info({
+            title: '操作成功',
+            desc: false
+          })
+        } else if (res.code === '403') {
+          this.$router.replace({
+            path: '/login',
+            query: { redirect: this.$router.currentRoute.fullPath }
+          })
         }
       })
     },
-    // selectTagGroup(item) {
-    //   if(this.tagCurrent.length === 0){
-    //     this.tagCurrent.push(item.id)
-    //   } else if (this.tagCurrent.length > 0 && this.tagCurrent.length <= 3) {
-    //     let tLength = this.tagCurrent.length
-    //     for(let i = 0;i < tLength; i++) {
-    //       if(this.tagCurrent[i] === item.id) {
-    //         this.tagCurrent.splice(i, 1)
-    //       } else {
-    //         this.tagCurrent.push(item.id)
-    //       }
-    //     }
-    //   } else {
-    //     return
-    //   }
-    //   console.log(this.tagCurrent)
-    // },
     selectCategory(item) {
       this.categoryCurrent = item.id
       // console.log(item)
@@ -241,9 +224,9 @@ export default {
       // 文件上传成功钩子
       if (res.code === '200') {
         this.$Notice.success({
-          title: '患者数据导入',
-          desc: '上传excel数据成功',
-          duration: 5
+          title: '缩略图上传',
+          desc: false,
+          duration: 3
         })
         this.thumbnailUrl = res.data.url
         this.thumbnail = res.data.id

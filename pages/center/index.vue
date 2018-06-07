@@ -6,7 +6,7 @@
         <div class="box">
           <img :src="personalInfo.avatar" :alt="personalInfo.nickName">
           <span class="nick-name">{{personalInfo.nickName}}</span>
-          <span class="gender" :class="{female: personalInfo.gender === '女'}"><Icon type="female" v-if="personalInfo.gender === '女'"></Icon><Icon type="male" v-else></Icon></span>
+          <span class="gender" :class="{female: personalInfo.gender === 1}"><Icon type="female" v-if="personalInfo.gender === 1"></Icon><Icon type="male" v-else></Icon></span>
           <span class="change-user" @click="logout">切换账号</span>
         </div>
       </div>
@@ -27,6 +27,7 @@
 import KaolaNav from '~/components/KaolaNav.vue'
 import KaolaFoo from '~/components/KaolaFoo.vue'
 import Service from '~/plugins/axios'
+import { getCenterInfo,logOut } from '~/api/api'
 export default {
   data() {
     return {
@@ -57,44 +58,33 @@ export default {
     }
   },
   created() {
-    this._getList()
     this._getData()
   },
   methods: {
-    _getList() {
-      return Service.get(
-        `https://easy-mock.com/mock/5ac20177470d657aa5c1dd51/kaolako/homePage`
-      ).then(res => {
-        if (res.data.code === 200) {
-          this.personalInfo = res.data.data.personalInfo
-        }
-      })
-    },
     _getData() {
-      return Service.post(
-        'http://kaola.eaon.win:8080/kaola/user/history/list',
-        {
-          type: 0,
-          page: 1,
-          pageSize: 10
-        }
-      ).then(res => {
-        if (res.data.code === '200') {
-          console.log(res.data)
-        } else if (res.data.code === '403') {
-          this.$router.replace({
-            path: '/login'
+      getCenterInfo().then(res => {
+        if (res.code === '200') {
+          this.personalInfo = res.data
+          if (res.data.isLogin === 0) {
+            this.$router.push({
+              path: '/login'
+            })
+          }
+        } 
+        else {
+          this.$Notice.error({
+            title: res.message,
+            desc: false
           })
         }
       })
     },
     logout() {
-      return Service.post('http://kaola.eaon.win:8080/kaola/logout')
-      .then( res=> {
+      logOut().then(res => {
         this.$store.commit('logOut')
-          this.$router.push({
-            path: '/login'
-          })
+        this.$router.push({
+          path: '/login'
+        })
       })
     }
   },
