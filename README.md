@@ -1,6 +1,6 @@
 # kaolako
 
-> nuxt.js fro kaolako website
+> nuxt.js for kaolako website
 
 ## Build Setup
 
