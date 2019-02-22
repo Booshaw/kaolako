@@ -2,7 +2,8 @@ module.exports = {
   plugins: [
     { src: '~plugins/iview', ssr: true },
     { src: '~plugins/video.js', ssr: false },
-    { src: '~plugins/quill.js', ssr: false }
+    { src: '~plugins/quill.js', ssr: false },
+    { src: '~plugins/vue-lazyload.js', ssr: false },
   ],
   css: [
     '~assets/stylus/index.styl',
@@ -56,7 +57,7 @@ module.exports = {
       [
         '/api', 
         { 
-          target: 'http://kaola.eaon.win:8080/kaola', // api主机
+          target: 'http://cd.godo.pub:18080/kaola', // api主机
           pathRewrite: { '^/api' : '/' }
         }
     ]
