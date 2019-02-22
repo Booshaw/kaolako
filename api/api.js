@@ -1,5 +1,5 @@
 import axios from 'axios'
-const serverUrl = 'http://api.kaolako.com/kaola'
+const serverUrl = 'http://cd.godo.pub:18080/kaola'
 
 // 登录
 export function login(params) {
