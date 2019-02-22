@@ -16,9 +16,9 @@
                 <div class="category-box">
                   <div class="category-gradient">
                   </div>
-                  <img class="category-img" :src="i.img" :alt="i.title">
+                  <img class="category-img" :src="i.thumbnailUrl" :alt="i.title">
                   <div class="category-info">
-                    <img :src="i.avatar" :alt="i.avatar">
+                    <img v-lazy="i.avatar" :alt="i.avatar">
                     <span>{{i.author}}</span>
                   </div>
                 </div>
@@ -96,9 +96,13 @@ export default {
       bannerList: []
     }
   },
-
+  head () {
+    return {
+      title: '尚课'
+    }
+  },
   asyncData () {
-    return Service.get(`http://api.kaolako.com/kaola/web/home`)
+    return Service.get(`http://cd.godo.pub:18080/kaola/web/home`)
     .then((res) => {
       console.log(res.data.data)
       return { 

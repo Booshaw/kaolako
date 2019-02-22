@@ -45,7 +45,7 @@
                 <div class="category-box">
                   <div class="category-gradient">
                   </div>
-                  <img class="category-img" :src="item.img" :alt="item.title">
+                  <img class="category-img" :src="item.thumbnailUrl" :alt="item.title">
                   <div class="category-info">
                     <img :src="item.avatar" :alt="item.avatar">
                     <span>{{item.author}}</span>
