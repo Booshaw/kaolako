@@ -11,7 +11,7 @@
         <div class="content-wrapper" v-for="(item, index) in courseList" :key="index">
           <h2 class="style-title">{{item.styleTitle}}</h2>
           <Row>
-            <i-col :lg="6" :md="6" :sm="12" :xs="12" v-for="(i, index1) in item.list" :key="index1">
+            <i-col :lg="6" :md="6" :sm="12" :xs="24" v-for="(i, index1) in item.list" :key="index1">
               <div class="box" @click="toCourseDetail(i)">
                 <div class="category-box">
                   <div class="category-gradient">
@@ -60,7 +60,7 @@
         <div class="teacher-wrapper">
           <h3 class="title">精英名师</h3>
           <Row>
-            <i-col :lg="4" :md="8" :sm="12" :xs="12" v-for="(t, index4) in teacherList" :key="index4">
+            <i-col :lg="4" :md="8" :sm="12" :xs="24" v-for="(t, index4) in teacherList" :key="index4">
               <div class="teacher-intro" @click="toTeacherInfo(t)">
                 <img :src="t.avatar" :alt="t.speciality" class="avatar">
                 <h2 class="name">{{t.name}}</h2>
